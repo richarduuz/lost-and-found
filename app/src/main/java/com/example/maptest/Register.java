@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,7 @@ public class Register extends AppCompatActivity {
     private EditText password;
     private Button register;
     private FirebaseAuth firebaseAuth;
+    private TextView login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,15 @@ public class Register extends AppCompatActivity {
         email = findViewById(R.id.email_register);
         password = findViewById(R.id.email_register);
         register = findViewById(R.id.register);
+        login =  findViewById(R.id.textView1);
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register.this, Login.class);
+                startActivity(intent);
+            }
+        });
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
