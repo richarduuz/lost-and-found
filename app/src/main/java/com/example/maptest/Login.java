@@ -20,7 +20,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.login);
 //        Intent input_intent = getIntent();
 
-        register = findViewById(R.id.register);
+        register = findViewById(R.id.signup);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
