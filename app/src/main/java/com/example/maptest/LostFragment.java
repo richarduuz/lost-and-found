@@ -54,8 +54,9 @@ public class LostFragment extends Fragment {
 //
 //    private OnFragmentInteractionListener mListener;
 
-    public LostFragment() {
+    public LostFragment(String location) {
         // Required empty public constructor
+        this.Location = location;
     }
 
 //    /**
@@ -128,8 +129,8 @@ public class LostFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_lost, container, false);
         ButterKnife.bind(this, view);
-        Intent intent=getActivity().getIntent();
-        Location=intent.getStringExtra("Location");
+
+
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -140,13 +141,17 @@ public class LostFragment extends Fragment {
             }
         });
 
+
+
         FirebaseFirestore db=FirebaseFirestore.getInstance();
         db.collection("Location")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
+
                             for (QueryDocumentSnapshot document:task.getResult()){
                                 int Image=R.drawable.noimage;
                                 if(document.contains("Image")) {}//TODO process the image

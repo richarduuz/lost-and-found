@@ -30,9 +30,11 @@ public class FoundFragment extends Fragment {
 //    private String mParam2;
 
 //    private OnFragmentInteractionListener mListener;
+    private String Location;
 
-    public FoundFragment() {
+    public FoundFragment(String location) {
         // Required empty public constructor
+        this.Location = location;
     }
 
 //    /**

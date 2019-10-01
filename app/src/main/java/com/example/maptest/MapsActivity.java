@@ -136,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             for(int i=0; i<buildingMarkerClick.size(); i++){
                 buildingMarkerClick.set(i,0);
             }
-            Intent intent = new Intent(MapsActivity.this, LostFragment.class);
+            Intent intent = new Intent(MapsActivity.this, Building_Items.class);
             intent.putExtra("Location", building2Marker.get(Integer.parseInt(markerId)));
             startActivity(intent);
         }

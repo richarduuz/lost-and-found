@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -30,9 +31,12 @@ public class Building_Items extends AppCompatActivity {
         getSupportActionBar().hide();
 
         setContentView(R.layout.activity_building__items);
+        Intent intent = getIntent();
+        String location = intent.getStringExtra("Location");
 
 
-        view_Init();
+
+        view_Init(location);
         fragmentAdpater = new FragmentAdapter(this.getSupportFragmentManager(), fragmentList);
         vp.setAdapter(fragmentAdpater);
         vp.setOffscreenPageLimit(2);//ViewPager的缓存为4帧
@@ -59,15 +63,15 @@ public class Building_Items extends AppCompatActivity {
     }
 
 
-    public void view_Init(){
+    public void view_Init(String location){
         title = findViewById(R.id.title);
         item_found = findViewById(R.id.lost);
         item_lost = findViewById(R.id.found);
 
         vp =  findViewById(R.id.mainViewPager);
 
-        lostFragment = new LostFragment();
-        foundFragment = new FoundFragment();
+        lostFragment = new LostFragment(location);
+        foundFragment = new FoundFragment(location);
 
         fragmentList.add(this.lostFragment);
         fragmentList.add(this.foundFragment);
