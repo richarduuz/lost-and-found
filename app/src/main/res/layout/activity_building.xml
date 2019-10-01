@@ -6,9 +6,21 @@
     android:orientation="vertical"
     tools:context=".BuildingActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/publishItem"
+            android:text="publish item"/>
+    </LinearLayout>
     <ListView
         android:id="@+id/demo_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 
 </LinearLayout>
