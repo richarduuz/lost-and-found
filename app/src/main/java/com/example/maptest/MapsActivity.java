@@ -9,10 +9,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,6 +55,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static ArrayList<String> building2Marker= new ArrayList<>();
     public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
     private int counter=0;
+
+    private SearchView searchView;
+    private ListView searchListView;
+    private final float SEARCHZOOM = 18;
 
 
     @Override
@@ -85,6 +96,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(intent);
             }
         });
+
+        // -------------- implementation of searching function
+        searchView = findViewById(R.id.searchview);
+
+        //show the submission button
+        searchView.setSubmitButtonEnabled(true);
+        //show hint to enter query
+        searchView.setQueryHint("please enter ...");
+        searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+
+        searchListView = findViewById(R.id.searchlistview);
+
+        //setup adapter for listview
+        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, building2Marker);
+        searchListView.setAdapter(adapter);
+        searchListView.setTextFilterEnabled(false);
+        //filter for searching
+        Filter filter = adapter.getFilter();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                try{
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(query)));
+                    filter.filter("?");
+                    searchView.clearFocus();
+                }
+                catch (Exception e){
+                    searchView.clearFocus();
+                    Toast.makeText(MapsActivity.this,"No Result", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(TextUtils.isEmpty(newText)){
+                    filter.filter("");
+                }else{
+                    filter.filter(newText);
+                }
+                return true;
+            }
+        });
+
+        searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("Search", searchListView.getAdapter().getItem(i).toString());
+                searchListView.clearTextFilter();
+                mMap.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(searchListView.getAdapter().getItem(i).toString())));
+                filter.filter("?");
+                searchView.clearFocus();
+            }
+        });
+
     }
 
 

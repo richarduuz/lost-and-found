@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlue">#03A89E</color>
-
+    <color name="searchBackgroud">#DBDBD3</color>
 </resources>

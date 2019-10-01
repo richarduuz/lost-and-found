@@ -6,6 +6,27 @@
     android:orientation="vertical"
     tools:context=".MapsActivity">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SearchView
+            android:id="@+id/searchview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false" />
+
+        <ListView
+            android:id="@+id/searchlistview"
+            android:background="@color/searchBackgroud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true"
+            />
+
+    </LinearLayout>
+
 
     <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
