@@ -20,6 +20,7 @@
         <activity android:name=".Building_Items"></activity>
         <activity android:name=".Register" />
         <activity android:name=".BuildingActivity" />
+        <activity android:name=".GoToPublishItems"/>
         <activity android:name=".Login" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

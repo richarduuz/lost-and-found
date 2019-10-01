@@ -1,15 +1,19 @@
 package com.example.maptest;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +46,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final float STARTZOOM=16;
     public static HashMap<String, LatLng> buildings= new HashMap<>();
     public static ArrayList<String> building2Marker= new ArrayList<>();
+    public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
+    private int counter=0;
 
 
     @Override
@@ -61,8 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myLocation=new LatLng(location.getLatitude(),location.getLongitude());
         }catch(SecurityException e){
             Toast.makeText(this,"please allow the GPS permission",Toast.LENGTH_LONG).show();
-        }catch(RuntimeException e){
-            e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(this,"please allow the GPS permission", Toast.LENGTH_LONG).show();
         }
 
 
@@ -95,8 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         FirebaseFirestore db= FirebaseFirestore.getInstance();
         CollectionReference collection=db.collection("test");
-
-
         db.collection("test")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
@@ -107,68 +112,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 buildings.put((String)document.get("Name"),new LatLng((double) document.get("Latitude"), (double) document.get("Longitude")));
                             }
                             for (String building : buildings.keySet()) {
+                                //mMap.addMarker(new MarkerOptions().position(buildings.get(building)).title(building));
                                 mMap.addMarker(new MarkerOptions().position(buildings.get(building)).title(building));
                                 building2Marker.add(building);
+                                buildingMarkerClick.add(0);
                             }
                             mMap.moveCamera(CameraUpdateFactory.zoomTo(STARTZOOM));
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get("Eastern Resource Center")));//TODO change it to personal location later
                         }
                     }
                 });
-
         mMap.setOnMarkerClickListener(this);
-
-
-//        LatLng ERC=new LatLng(-37.799388, 144.962828);
-//            LatLng AL=new LatLng(-37.798636, 144.963404);
-//            LatLng DMD=new LatLng(-37.799073, 144.963104);
-//            LatLng AEF=new LatLng(-37.798857, 144.963954);
-//            LatLng PHB=new LatLng(-37.798042, 144.963703);
-//            LatLng Stop1=new LatLng(-37.799964, 144.963775);
-//            LatLng B1888=new LatLng(-37.799804, 144.963221);
-//            LatLng DoME= new LatLng(-37.799932, 144.962271);
-//
-//            // Add a marker in Sydney and move the camera
-//            mMap.addMarker(new MarkerOptions().position(ERC).title("Eastern Resource Center"));
-//            mMap.addMarker(new MarkerOptions().position(AL).title("Alice Hoy"));
-//            mMap.addMarker(new MarkerOptions().position(DMD).title("Doug McDonell"));
-//            mMap.addMarker(new MarkerOptions().position(AEF).title("Asia Education Foundation"));
-//            mMap.addMarker(new MarkerOptions().position(PHB).title("Peter Hall Building"));
-//            //mMap.addCircle(new CircleOptions().center(ERC));
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(ERC));
-//            mMap.moveCamera(CameraUpdateFactory.zoomTo(STARTZOOM));
-//            mMap.setOnMarkerClickListener(this);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker){
-        String markerId=marker.getId();
+        String markerId = marker.getId();
+        markerId = markerId.substring(1, 2);
         marker.showInfoWindow();
-        Intent intent = new Intent(MapsActivity.this, BuildingActivity.class);
-        switch(markerId){
-            //TODO Jump to different activities respectively
-            case("m0"):
-                intent.putExtra("Location", building2Marker.get(0));
-                startActivity(intent);
-                break;
-            case("m1"):
-                intent.putExtra("Location", building2Marker.get(1));
-                startActivity(intent);
-                break;
-            case("m2"):
-                intent.putExtra("Location", building2Marker.get(2));
-                startActivity(intent);
-                break;
-//            case("m3"):
-//                intent.putExtra("Location", "AEF");
-//                startActivity(intent);
-//                break;
-//            case("m4"):
-//                intent.putExtra("Location", "PHB");
-//                startActivity(intent);
-//                break;
-            default:
-                return false;
+        int markerClick=buildingMarkerClick.get(Integer.parseInt(markerId));
+        buildingMarkerClick.set(Integer.parseInt(markerId),markerClick+1);
+        if(buildingMarkerClick.get(Integer.parseInt(markerId))==2){
+            for(int i=0; i<buildingMarkerClick.size(); i++){
+                buildingMarkerClick.set(i,0);
+            }
+            Intent intent = new Intent(MapsActivity.this, BuildingActivity.class);
+            intent.putExtra("Location", building2Marker.get(Integer.parseInt(markerId)));
+            startActivity(intent);
         }
         return true;
     }
