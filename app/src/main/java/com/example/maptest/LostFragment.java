@@ -1,14 +1,29 @@
 package com.example.maptest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 //
 ///**
@@ -20,6 +35,14 @@ import android.view.ViewGroup;
 // * create an instance of this fragment.
 // */
 public class LostFragment extends Fragment {
+    private String Location;
+    private ArrayList<PublishItem> items=new ArrayList<>();
+    private ListDemoAdapter mAdapter=null;
+    @BindView(R.id.publishItemSpare)
+    Button button;
+    @BindView(R.id.demo_list_view)
+    ListView listView;
+
 //    // TODO: Rename parameter arguments, choose names that match
 //    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 //    private static final String ARG_PARAM1 = "param1";
@@ -52,21 +75,92 @@ public class LostFragment extends Fragment {
 //        fragment.setArguments(args);
 //        return fragment;
 //    }
-//
+
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+//        setContentView(R.layout.fragment_lost);
+//        Intent intent=getIntent();
+//        Location=intent.getStringExtra("Location");
+//        button=findViewById(R.id.publishItem);
+//        button.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View view){
+//                Intent intent=new Intent(BuildingActivity.this, GoToPublishItems.class);
+//                intent.putExtra("Location", Location);
+//                startActivity(intent);
+//                BuildingActivity.this.finish();
+//            }
+//        });
+//
+//        FirebaseFirestore db=FirebaseFirestore.getInstance();
+//        db.collection(Location)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()){
+//                            for (QueryDocumentSnapshot document:task.getResult()){
+//                                int Image=R.drawable.noimage;
+//                                if(document.contains("Image")) {}//TODO process the image
+//                                String Name=(String)document.get("Name");
+//                                String Description=(String)document.get("Description");
+//                                listView= (ListView) findViewById(R.id.demo_list_view);
+//                                items.add(new PublishItem(Image,Name,Description));
+//                                mAdapter=new ListDemoAdapter(BuildingActivity.this, R.layout.list_layout, items);
+//                                listView.setAdapter(mAdapter);
+//                            }
+//
+//                        }
+//                    }
+//                });
+//
+////        listView= (ListView) findViewById(R.id.demo_list_view);
+////        items.add(new PublishItem(R.drawable.noimage, Location));
+////        mAdapter=new ListDemoAdapter(BuildingActivity.this, R.layout.list_layout, items);
+////        listView.setAdapter(mAdapter);
+//    }
 //    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lost, container, false);
+        View view = inflater.inflate(R.layout.fragment_lost, container, false);
+        ButterKnife.bind(this, view);
+        Intent intent=getActivity().getIntent();
+        Location=intent.getStringExtra("Location");
+        button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent=new Intent(LostFragment.this.getActivity(), GoToPublishItems.class);
+                intent.putExtra("Location", Location);
+                startActivity(intent);
+                LostFragment.this.getActivity().finish();
+            }
+        });
+
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        db.collection("Location")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot document:task.getResult()){
+                                int Image=R.drawable.noimage;
+                                if(document.contains("Image")) {}//TODO process the image
+                                String Name=(String)document.get("Name");
+                                String Description=(String)document.get("Description");
+                                items.add(new PublishItem(Image,Name,Description));
+                                mAdapter=new ListDemoAdapter(LostFragment.this.getActivity(), R.layout.list_layout, items);
+                                listView.setAdapter(mAdapter);
+                            }
+
+                        }
+                    }
+                });
+        return view;
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event
