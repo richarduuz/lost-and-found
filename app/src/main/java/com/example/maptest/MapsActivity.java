@@ -61,6 +61,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myLocation=new LatLng(location.getLatitude(),location.getLongitude());
         }catch(SecurityException e){
             Toast.makeText(this,"please allow the GPS permission",Toast.LENGTH_LONG).show();
+        }catch(RuntimeException e){
+            e.printStackTrace();
         }
 
 
@@ -72,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, Register.class);
+                Intent intent = new Intent(MapsActivity.this, Building_Items.class);
                 startActivity(intent);
             }
         });

@@ -6,6 +6,8 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -15,10 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Register"></activity>
-        <activity android:name=".BuildingActivity"></activity>
+        <activity android:name=".Building_Items"></activity>
+        <activity android:name=".Register" />
+        <activity android:name=".BuildingActivity" />
         <activity android:name=".Login" />
-
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -29,7 +31,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDe21wVYVvc3s29taADbc7AUG0gSOTQBvs" />
+            android:value="AIzaSyALloUMLJYsoE8Lovv6Vek-lySuQTausu4" />
 
         <activity
             android:name=".MapsActivity"
