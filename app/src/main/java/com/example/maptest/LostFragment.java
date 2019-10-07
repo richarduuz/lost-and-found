@@ -157,7 +157,7 @@ public class LostFragment extends Fragment {
                                 if(document.contains("Image")) {}//TODO process the image
                                 String Name=(String)document.get("Name");
                                 String Description=(String)document.get("Description");
-                                items.add(new PublishItem(Image,Name,Description));
+                                items.add(new PublishItem(Image,Name,Description,"False"));
                                 mAdapter=new ListDemoAdapter(LostFragment.this.getActivity(), R.layout.list_layout, items);
                                 listView.setAdapter(mAdapter);
                             }

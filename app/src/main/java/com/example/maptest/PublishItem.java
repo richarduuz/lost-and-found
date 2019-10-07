@@ -6,11 +6,13 @@ public class PublishItem {
 
     private String itemName;
     private String itemDiscription=null;
+    private String Found;
 
-    PublishItem(int image, String name, String discription){
+    PublishItem(int image, String name, String discription, String Found){
         itemImage=image;
         itemName=name;
         itemDiscription=discription;
+        this.Found=Found;
     }
 
     PublishItem(int image, String name){

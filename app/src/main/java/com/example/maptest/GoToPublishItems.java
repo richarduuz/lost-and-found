@@ -42,6 +42,7 @@ import butterknife.BindView;
 
 public class GoToPublishItems extends FragmentActivity {
     private String Location;
+    private String Found;
     private EditText Name;
     private EditText Description;
     private byte[] Image;
@@ -57,6 +58,7 @@ public class GoToPublishItems extends FragmentActivity {
         setContentView(R.layout.gotopublishitems);
         Intent intent=getIntent();
         Location=intent.getStringExtra("Location");
+        Found=intent.getStringExtra("Found");
         Name=findViewById(R.id.item_name);
         Description=findViewById(R.id.item_description);
         publish=findViewById(R.id.gotopublish);
@@ -73,6 +75,7 @@ public class GoToPublishItems extends FragmentActivity {
                     public void run() {
                         Intent intent1=new Intent(GoToPublishItems.this, BuildingActivity.class);
                         intent1.putExtra("Location",Location);
+                        intent1.putExtra("Found",Found);
                         startActivity(intent1);
                         GoToPublishItems.this.finish();
                     }
@@ -96,6 +99,7 @@ public class GoToPublishItems extends FragmentActivity {
         Map<String, String> lostThing=new HashMap<>();
         lostThing.put("Name",name);
         lostThing.put("Description",description);
+        lostThing.put("Found",Found);
         FirebaseFirestore db= FirebaseFirestore.getInstance();
         db.collection(Location)
                 .add(lostThing)

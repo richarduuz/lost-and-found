@@ -3,24 +3,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".BuildingActivity">
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="vertical">
+        android:layout_height="600dp">
+        <ListView
+            android:id="@+id/demo_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/gotofound"
+            android:text="Go to found list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            />
+
+        <Button
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/publishItem"
-            android:text="publish item"/>
-    </LinearLayout>
-    <ListView
-        android:id="@+id/demo_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+            android:text="publish"
+            android:layout_weight="0.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.011"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/gotofound"
+            app:layout_constraintWidth_percent="0.5"
+            />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/publishItem"-->
+    <!--android:layout_width="202dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:text="publish item" />-->
+
+    <!--<Button-->
+    <!--android:layout_width="202dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:id="@+id/gotofound"-->
+    <!--android:text="go to found list"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+
 
 
 </LinearLayout>
