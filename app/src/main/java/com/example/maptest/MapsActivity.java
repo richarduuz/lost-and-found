@@ -3,6 +3,10 @@ package com.example.maptest;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.view.MenuItem;
+import android.view.Menu;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -46,7 +50,6 @@ import javax.annotation.Nonnull;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private Button button;
     private LocationManager locationManager;
     private String provider;
     private LatLng myLocation;
@@ -59,7 +62,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SearchView searchView;
     private ListView searchListView;
     private final float SEARCHZOOM = 18;
-
 
 
     @Override
@@ -89,14 +91,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        button = findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigation.getMenu();
+        MenuItem menuitem = menu.getItem(0);
+        menuitem.setChecked(true);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, Building_Items.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_me:
+                        Intent b = new Intent(MapsActivity.this, Me.class);
+                        startActivity(b);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        break;
+                }
+                return false;
             }
         });
+
+
 
         // -------------- implementation of searching function
         searchView = findViewById(R.id.searchview);
