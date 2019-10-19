@@ -7,26 +7,16 @@
     android:orientation="vertical"
     tools:context=".MapsActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/search_text"
+        android:text="Search here"
+        android:clickable="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <SearchView
-            android:id="@+id/searchview"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:iconifiedByDefault="false" />
-
-        <ListView
-            android:id="@+id/searchlistview"
-            android:background="@color/searchBackgroud"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:isScrollContainer="true"
-            />
-
-    </LinearLayout>
+        android:layout_height="50dp"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border"
+        android:gravity="center"/>
 
 
     <FrameLayout
