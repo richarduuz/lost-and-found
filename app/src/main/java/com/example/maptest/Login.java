@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +27,7 @@ public class Login extends AppCompatActivity {
     private Button login;
     private TextView register;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,17 @@ public class Login extends AppCompatActivity {
         email = findViewById(R.id.username);
         passsword = findViewById(R.id.password);
         login = findViewById(R.id.login);
+
+
+
+        currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null){
+            Intent intent = new Intent(this, MapsActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+
 
 
         register = findViewById(R.id.textView);
