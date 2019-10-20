@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import javax.annotation.Nonnull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 
@@ -69,12 +71,15 @@ public class mapFragment extends Fragment {
 //    private OnFragmentInteractionListener mListener;
     private String provider;
     private LatLng myLocation;
+    public static String targetBuilding = "Alice Hoy";
     private GoogleMap map;
     private LocationManager locationManager;
     private final float STARTZOOM=16;
     public static HashMap<String, LatLng> buildings= new HashMap<>();
     public static ArrayList<String> building2Marker= new ArrayList<>();
     public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
+    private static final int REQUEST_CODE = 1;
+    private final float SEARCHZOOM = 18;
 
     @BindView(R.id.mapView)
     MapView mapView;
@@ -116,6 +121,17 @@ public class mapFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, view);
+
+        goToSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                intent.putExtra("building", building2Marker);
+//                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE);
+            }
+        });
+
 
 
 
@@ -167,6 +183,10 @@ public class mapFragment extends Fragment {
                 map.moveCamera(CameraUpdateFactory.zoomTo(STARTZOOM));
                 map.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
 
+
+
+
+
                 map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -194,7 +214,7 @@ public class mapFragment extends Fragment {
         });
 
 
-        locationManager=(LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager=(LocationManager)mapFragment.this.getActivity().getSystemService(Context.LOCATION_SERVICE);
         List<String> list=locationManager.getProviders(true);
         if(list.contains(LocationManager.GPS_PROVIDER)){
             provider=LocationManager.GPS_PROVIDER;
@@ -209,13 +229,28 @@ public class mapFragment extends Fragment {
             Toast.makeText(getActivity(),"please allow the GPS permission",Toast.LENGTH_LONG).show();
         }catch (NullPointerException e){
             Toast.makeText(getActivity(),"please allow the GPS permission", Toast.LENGTH_LONG).show();
+        }catch (IllegalArgumentException e){
+
         }
+
+//        closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
+//        new Thread(c).start();
+
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            Log.d("query", data.getStringExtra("Query"));
+            map.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
+            map.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(data.getStringExtra("Query"))));
+        }
     }
 
     public void mapInit(){
         if (!Places.isInitialized()) {
-            Places.initialize(getActivity().getApplicationContext(), "AIzaSyBtbw67hiHLGAhYsXmuXZmcPtO4hc2ehdU");
+            Places.initialize(mapFragment.this.getActivity().getApplicationContext(), "AIzaSyBtbw67hiHLGAhYsXmuXZmcPtO4hc2ehdU");
         }
     }
 

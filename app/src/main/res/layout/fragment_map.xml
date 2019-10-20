@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".mapFragment">
 
 
@@ -11,9 +12,9 @@
     <TextView
         android:id="@+id/searchTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="TextView" />
+        android:layout_height="50dp"
+
+        android:text="FFHIRHFURFHRUFRUFHRUFR" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

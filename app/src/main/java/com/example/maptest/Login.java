@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
 
         currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null){
-            Intent intent = new Intent(this, MapsActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -92,7 +92,7 @@ public class Login extends AppCompatActivity {
                             TimerTask task1 = new TimerTask() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(Login.this, MapsActivity.class);
+                                    Intent intent = new Intent(Login.this, MainActivity.class);
                                     startActivity(intent);
                                     Login.this.finish();
                                 }
