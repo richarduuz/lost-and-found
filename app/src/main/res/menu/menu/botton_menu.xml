@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/encyclopedia_menu"
+        android:icon="@drawable/ic_book_black_24dp"
+        android:title="@string/encyclopedia_menu" />
+    <item
+        android:id="@+id/identifier_menu"
+        android:icon="@drawable/ic_camera_enhance_black_24dp"
+        android:title="@string/identifier_menu" />
+    <item
+        android:id="@+id/personal_menu"
+        android:icon="@drawable/ic_people_black_24dp"
+        android:title="@string/me_menu" />
+
+</menu>
