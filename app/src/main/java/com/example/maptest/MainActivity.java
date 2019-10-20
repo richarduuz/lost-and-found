@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private mapFragment map_fragment;
     private listFragment list_fragment;
     private MeFragment meFragment;
-    public static String targetBuilding = "Alice Hoy";
+    public static String targetBuilding = "Doug McDonell";
 //    private MessageFragment messageFragment;
 //    private MeFragment meFragment;
     private ViewPager viewPager;
@@ -80,16 +80,16 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(0);
                     return true;
                 }
-//                case R.id.navigation_list:{
-//                    viewPager.setCurrentItem(1);
-//                    return true;
-//                }
+                case R.id.navigation_list:{
+                    viewPager.setCurrentItem(1);
+                    return true;
+                }
 //                case R.id.navigation_message:{
 //                    viewPager.setCurrentItem(2);
 //                    return true;
 //                }
                 case R.id.navigation_me:{
-                    viewPager.setCurrentItem(1);
+                    viewPager.setCurrentItem(2);
                     return true;
                 }
             }
@@ -105,10 +105,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.mainViewPager);
         map_fragment = new mapFragment();
         meFragment = new MeFragment();
-//        list_fragment = new listFragment();
+        list_fragment = new listFragment();
         fragmentList.add(map_fragment);
+        fragmentList.add(list_fragment);
         fragmentList.add(meFragment);
-//        fragmentList.add(list_fragment);
+
 
     }
 

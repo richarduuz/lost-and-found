@@ -92,7 +92,7 @@ public class listFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_list, container, true);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         GotoPublish = view.findViewById(R.id.publish);
         GotoFound = view.findViewById(R.id.toFound);
         listView =  view.findViewById(R.id.item_list);

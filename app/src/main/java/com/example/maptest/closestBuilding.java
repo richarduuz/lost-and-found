@@ -32,6 +32,7 @@ public class closestBuilding implements Runnable {
 
     public void run(){
         while(true){
+            this.minDis = 10000000;
 
             List<String> list=locationManager.getProviders(true);
             if(list.contains(LocationManager.GPS_PROVIDER)){
@@ -57,6 +58,7 @@ public class closestBuilding implements Runnable {
                 }
             }
             MainActivity.targetBuilding = target;
+            System.out.println("The closest building is: " + target);
             try {
                 Thread.sleep(300000);
             }

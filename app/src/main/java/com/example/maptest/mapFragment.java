@@ -233,8 +233,8 @@ public class mapFragment extends Fragment {
 
         }
 
-//        closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
-//        new Thread(c).start();
+        closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
+        new Thread(c).start();
 
         return view;
     }
