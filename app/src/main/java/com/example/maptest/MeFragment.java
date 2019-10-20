@@ -66,6 +66,8 @@ public class MeFragment extends Fragment {
     TextView email_address;
     @BindView(R.id.sign_out)
     Button signoutbtn;
+    @BindView(R.id.profile)
+    TextView profile;
 
 
     public MeFragment() {
@@ -87,60 +89,69 @@ public class MeFragment extends Fragment {
             email_address.setText(email);
             Uri photoUrl = user.getPhotoUrl();
             Picasso.with(getActivity()).load(photoUrl).into(photo);
-        }
-//        else{
-//            Intent login_intent = new Intent(MeFragment.this.getActivity(), Login.class);
-//            startActivity(login_intent);
-//            MeFragment.this.getActivity().finish();
-//        }
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                Log.d("me", "photo");
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Please choose");
-                final String[] chioces = {"Take a photo from camera", "Upload a photo from Gallery"};
-                builder.setItems(chioces, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
-                            case 0:
-                                File image = new File(getActivity().getExternalCacheDir(), "photo.jpg");
-                                try {
-                                    if (image.exists()) {
-                                        image.delete();
-                                        image.createNewFile();
+                    Log.d("me", "photo");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Please choose");
+                    final String[] chioces = {"Take a photo from camera", "Upload a photo from Gallery"};
+                    builder.setItems(chioces, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switch (i){
+                                case 0:
+                                    File image = new File(getActivity().getExternalCacheDir(), "photo.jpg");
+                                    try {
+                                        if (image.exists()) {
+                                            image.delete();
+                                            image.createNewFile();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                photoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", image);
-                                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
-                                break;
-                            case 1:
-                                Intent gallery_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                startActivityForResult(gallery_intent, GALLERY_REQUEST_CODE);
-                                break;
+                                    photoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", image);
+                                    Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                                    startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
+                                    break;
+                                case 1:
+                                    Intent gallery_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    startActivityForResult(gallery_intent, GALLERY_REQUEST_CODE);
+                                    break;
+                            }
                         }
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        });
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
 
-        signoutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent sign_out_intent = new Intent(MeFragment.this.getActivity(), MainActivity.class);
-                startActivity(sign_out_intent);
-                MeFragment.this.getActivity().finish();
-            }
-        });
+            signoutbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent sign_out_intent = new Intent(MeFragment.this.getActivity(), MainActivity.class);
+                    startActivity(sign_out_intent);
+                    MeFragment.this.getActivity().finish();
+                }
+            });
+        }
+        else{
+            photo.setImageResource(R.drawable.noimage);
+            username.setText("Please Login first");
+            profile.setText("");
+            signoutbtn.setText("Log in");
+            signoutbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent login_intent = new Intent(MeFragment.this.getActivity(), Login.class);
+                    startActivity(login_intent);
+                    MeFragment.this.getActivity().finish();
+                }
+            });
+        }
         return view;
     }
 
@@ -161,7 +172,7 @@ public class MeFragment extends Fragment {
             Log.e("Gallery", "Gallery upload error");
         }
     }
-    
+
 
     private void updatePhoto(Uri uri){
 
