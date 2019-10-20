@@ -3,6 +3,10 @@ package com.example.maptest;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import android.view.MenuItem;
+import android.view.Menu;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -20,6 +24,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,7 +51,6 @@ import javax.annotation.Nonnull;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private Button button;
     private LocationManager locationManager;
     private String provider;
     private LatLng myLocation;
@@ -56,10 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
     private int counter=0;
 
-    private SearchView searchView;
-    private ListView searchListView;
     private final float SEARCHZOOM = 18;
-
+    private TextView searchText;
+    private int REQUEST_CODE = 1;
 
 
     @Override
@@ -89,71 +92,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        button = findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigation.getMenu();
+        MenuItem menuitem = menu.getItem(0);
+        menuitem.setChecked(true);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, Building_Items.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_me:
+                        Intent b = new Intent(MapsActivity.this, Me.class);
+                        startActivity(b);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        break;
+                }
+                return false;
             }
         });
+
+
 
         // -------------- implementation of searching function
-        searchView = findViewById(R.id.searchview);
-
-        //show the submission button
-        searchView.setSubmitButtonEnabled(true);
-        //show hint to enter query
-        searchView.setQueryHint("please enter ...");
-        searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-
-        searchListView = findViewById(R.id.searchlistview);
-
-        //setup adapter for listview
-        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, building2Marker);
-        searchListView.setAdapter(adapter);
-        searchListView.setTextFilterEnabled(false);
-        //filter for searching
-        Filter filter = adapter.getFilter();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchText = findViewById(R.id.search_text);
+        searchText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                try{
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(query)));
-                    filter.filter("?");
-                    searchView.clearFocus();
-                }
-                catch (Exception e){
-                    searchView.clearFocus();
-                    Toast.makeText(MapsActivity.this,"No Result", Toast.LENGTH_LONG).show();
-                }
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(TextUtils.isEmpty(newText)){
-                    filter.filter("");
-                }else{
-                    filter.filter(newText);
-                }
-                return true;
+            public void onClick(View view) {
+                Intent intent = new Intent(MapsActivity.this, SearchActivity.class);
+                intent.putExtra("building", building2Marker);
+//                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE);
             }
         });
+    }
 
-        searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("Search", searchListView.getAdapter().getItem(i).toString());
-                searchListView.clearTextFilter();
-                mMap.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(searchListView.getAdapter().getItem(i).toString())));
-                filter.filter("?");
-                searchView.clearFocus();
-            }
-        });
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            Log.d("query", data.getStringExtra("Query"));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(data.getStringExtra("Query"))));
+        }
     }
 
 
