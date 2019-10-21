@@ -24,6 +24,7 @@ public class updateClosestBuilding implements Runnable {
     public void run(){
         while(true){
             if (!listFragment.Location.equals(MainActivity.targetBuilding)){
+                itemList.clear();
 //                listFragment.items.clear();
                 listFragment.Location = MainActivity.targetBuilding;
                 System.out.println("Found update, clear the arrayList");
