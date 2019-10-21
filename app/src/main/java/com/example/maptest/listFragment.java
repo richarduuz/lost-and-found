@@ -45,13 +45,18 @@ public class listFragment extends Fragment {
 //
 //    private OnFragmentInteractionListener mListener;
 
-    private ArrayList<PublishItem> items=new ArrayList<>();
-    private ListView listView;
-    private ListDemoAdapter mAdapter=null;
-    private Button GotoPublish;
-    private Button GotoFound;
-    private String Found;
-    private String Location = MainActivity.targetBuilding;
+
+
+
+    protected ArrayList<PublishItem> items=new ArrayList<>();
+    protected static ListView listView;
+    protected static ListDemoAdapter mAdapter=null;
+    protected Button GotoPublish;
+    protected Button GotoFound;
+    protected static String Found;
+    protected static String Location = MainActivity.targetBuilding;
+
+
 
 
 
@@ -100,6 +105,9 @@ public class listFragment extends Fragment {
         if (Found.equals("False")) GotoFound.setText("Go to found list");
         else GotoFound.setText("Go to lost list");
         fetchData();
+
+        updateClosestBuilding update = new updateClosestBuilding(listFragment.this);
+        new Thread(update).start();
 
 
         GotoPublish.setOnClickListener(new View.OnClickListener(){
