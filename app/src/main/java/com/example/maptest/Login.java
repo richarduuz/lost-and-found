@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -82,9 +83,11 @@ public class Login extends AppCompatActivity {
     private void userLogin(String email, String password){
         if (TextUtils.isEmpty(email)){
             Toast.makeText(Login.this, "Please enter email", Toast.LENGTH_SHORT).show();
+            return;
         }
         else if (TextUtils.isEmpty(password)){
             Toast.makeText(Login.this, "Please enter valid password", Toast.LENGTH_SHORT).show();
+            return;
         }
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -116,7 +119,7 @@ public class Login extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                Login.this.finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

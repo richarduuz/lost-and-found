@@ -23,7 +23,7 @@ public class updateClosestBuilding implements Runnable {
 
     public void run(){
         while(true){
-            if (!listFragment.Location.equals(MainActivity.targetBuilding)){
+            if (!listFragment.Location.equals(MainActivity.targetBuilding) && list.getActivity() != null){
                 itemList.clear();
 //                listFragment.items.clear();
                 listFragment.Location = MainActivity.targetBuilding;

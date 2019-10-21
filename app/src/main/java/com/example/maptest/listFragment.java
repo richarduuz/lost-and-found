@@ -63,6 +63,7 @@ public class listFragment extends Fragment {
 
 
 
+
     public listFragment() {
         // Required empty public constructor
     }
@@ -85,6 +86,7 @@ public class listFragment extends Fragment {
     }
 
     public void fetchData(){
+        items.clear();
         FirebaseFirestore db=FirebaseFirestore.getInstance();
         db.collection(Location)
                 .whereEqualTo("Found", Found)
@@ -102,7 +104,7 @@ public class listFragment extends Fragment {
 
                             }
                             mAdapter=new ListDemoAdapter(listFragment.this.getActivity(), R.layout.list_layout, items);
-                            System.out.println("ready for content");
+                            System.out.println("ready for content: " + Location);
                             listView.setAdapter(mAdapter);
                         }
                     }

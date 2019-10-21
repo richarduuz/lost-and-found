@@ -17,10 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 
+import java.util.ArrayList;
+
 public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private ListView searchListView;
+    private ArrayList<String> list = new ArrayList<>();
 
 
     @Override
@@ -28,6 +31,8 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
         Intent intent = getIntent();
+        list.clear();
+        list = intent.getStringArrayListExtra("building");
 
         searchView = findViewById(R.id.searchview);
 
@@ -40,7 +45,8 @@ public class SearchActivity extends AppCompatActivity {
         searchListView = findViewById(R.id.searchlistview);
 
         //setup adapter for listview
-        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, intent.getStringArrayListExtra("building"));
+        System.out.println("New Adapter");
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.search_list, list);
         searchListView.setAdapter(adapter);
         searchListView.setTextFilterEnabled(false);
         //filter for searching
