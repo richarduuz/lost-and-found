@@ -5,6 +5,8 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -34,8 +37,6 @@ public class BuildingActivity extends AppCompatActivity {
     private ArrayList<PublishItem> items=new ArrayList<>();
     private ListView listView;
     private ListDemoAdapter mAdapter=null;
-    private Button GotoPublish;
-    private Button GotoFound;
     private String Location;
     private String Found;
 
@@ -45,31 +46,15 @@ public class BuildingActivity extends AppCompatActivity {
         Intent intent=getIntent();
         Location=intent.getStringExtra("Location");
         Found=intent.getStringExtra("Found");
-        GotoPublish=findViewById(R.id.publishItem);
-        GotoFound=findViewById(R.id.gotofound);
-        if (Found.equals("False")) GotoFound.setText("Go to found list");
-        else GotoFound.setText("Go to lost list");
-        GotoPublish.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent=new Intent(BuildingActivity.this, GoToPublishItems.class);
-                intent.putExtra("Location", Location);
-                intent.putExtra("Found",Found);
-                startActivity(intent);
-                BuildingActivity.this.finish();
-            }
-        });
-        GotoFound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(BuildingActivity.this, BuildingActivity.class);
-                intent.putExtra("Location", Location);
-                if (Found.equals("False")) intent.putExtra("Found", "True");
-                else intent.putExtra("Found", "False");
-                startActivity(intent);
-                BuildingActivity.this.finish();
-            }
-        });
+        fetchData();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+    }
+    public void fetchData(){
         FirebaseFirestore db=FirebaseFirestore.getInstance();
         db.collection(Location)
                 .whereEqualTo("Found", Found)
@@ -92,11 +77,48 @@ public class BuildingActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-//        listView= (ListView) findViewById(R.id.demo_list_view);
-//        items.add(new PublishItem(R.drawable.noimage, Location));
-//        mAdapter=new ListDemoAdapter(BuildingActivity.this, R.layout.list_layout, items);
-//        listView.setAdapter(mAdapter);
     }
-    //TODO get the item details from the databaes
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
+        // If you don't have res/menu, just create a directory named "menu" inside res
+        getMenuInflater().inflate(R.menu.publish_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id ==android.R.id.home) {
+            this.finish();
+            return true;
+        }
+        if(id == R.id.menu_publish){
+            //What you want(Code Here)
+            Intent intent=new Intent(BuildingActivity.this, GoToPublishItems.class);
+            intent.putExtra("Location", Location);
+            intent.putExtra("Found",Found);
+            startActivity(intent);
+            BuildingActivity.this.finish();
+            return true;
+        }
+        if(id == R.id.menu_gotofoundlist){
+            //What you want(Code Here)
+            Intent intent = new Intent(BuildingActivity.this, BuildingActivity.class);
+            intent.putExtra("Location", Location);
+            if (Found.equals("False"))
+                intent.putExtra("Found", "True");
+            else
+                intent.putExtra("Found", "False");
+            startActivity(intent);
+            BuildingActivity.this.finish();
+            fetchData();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

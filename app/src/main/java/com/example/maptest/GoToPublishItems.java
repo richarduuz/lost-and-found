@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -40,7 +43,9 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 
-public class GoToPublishItems extends FragmentActivity {
+import static android.app.Activity.RESULT_OK;
+
+public class GoToPublishItems extends AppCompatActivity {
     private String Location;
     private String Found;
     private EditText Name;
@@ -93,6 +98,12 @@ public class GoToPublishItems extends FragmentActivity {
                 startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public void upload(String name, String description, String Location){
@@ -127,6 +138,16 @@ public class GoToPublishItems extends FragmentActivity {
         else {
             Log.e("Gallery", "Gallery upload error");
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

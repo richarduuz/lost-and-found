@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
 
-        android:text="FFHIRHFURFHRUFRUFHRUFR" />
+        android:text="Search here" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

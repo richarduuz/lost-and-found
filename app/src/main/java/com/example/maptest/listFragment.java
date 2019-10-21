@@ -9,10 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -73,7 +78,6 @@ public class listFragment extends Fragment {
         listView =  view.findViewById(R.id.item_list);
         Found = "False";
         fetchData();
-
         updateClosestBuilding update = new updateClosestBuilding(listFragment.this);
         new Thread(update).start();
         setHasOptionsMenu(true);
@@ -105,40 +109,71 @@ public class listFragment extends Fragment {
                 });
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu items for use in the action bar
-        inflater.inflate(R.menu.publish_menu, menu);
+        // Inflate your Menu
+        inflater.inflate(R.menu.swich_menu, menu);
+
+        // Get the action view used in your toggleservice item
+        final MenuItem switch_item = menu.findItem(R.id.switch_item);
+        final Switch actionView = (Switch) switch_item.getActionView();
+        actionView.setShowText(true);
+        actionView.setTextOn("Found");
+        actionView.setTextOff("Lost");
+//        if (Found.equals("False"))
+//            switch_item.setTitle("Go to found list");
+//        else
+//            switch_item.setTitle("Go to lost list");
+        actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Start or stop your Service
+                if (Found.equals("False")){
+                    Found = "True";
+                    switch_item.setTitle("Found");
+                }
+                else{
+                    Found = "False";
+                    switch_item.setTitle("Lost");
+                }
+//                if (Found.equals("False")) item.setTitle("Go to found list");
+//                else item.setTitle("Go to lost list");
+                items.clear();
+                fetchData();
+                }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.menu_publish){
-            //What you want(Code Here)
-            Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
-            intent.putExtra("Location", Location);
-            intent.putExtra("Found",Found);
-            startActivity(intent);
-            return true;
-        }
-        if(id == R.id.menu_gotofoundlist){
-            //What you want(Code Here)
-            if (Found.equals("False")){
-                Found = "True";
-            }
-            else{
-                Found = "False";
-            }
-            if (Found.equals("False")) item.setTitle("Go to found list");
-            else item.setTitle("Go to lost list");
-            items.clear();
-            fetchData();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if(id == R.id.menu_publish){
+//            //What you want(Code Here)
+//            Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
+//            intent.putExtra("Location", Location);
+//            intent.putExtra("Found",Found);
+//            startActivity(intent);
+//            return true;
+//        }
+//        if(id == R.id.menu_gotofoundlist){
+//            //What you want(Code Here)
+//            if (Found.equals("False")){
+//                Found = "True";
+//            }
+//            else{
+//                Found = "False";
+//            }
+//            if (Found.equals("False")) item.setTitle("Go to found list");
+//            else item.setTitle("Go to lost list");
+//            items.clear();
+//            fetchData();
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 }
