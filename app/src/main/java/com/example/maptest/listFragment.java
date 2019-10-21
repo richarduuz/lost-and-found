@@ -51,8 +51,6 @@ public class listFragment extends Fragment {
     protected ArrayList<PublishItem> items=new ArrayList<>();
     protected static ListView listView;
     protected static ListDemoAdapter mAdapter=null;
-    protected Button GotoPublish;
-    protected Button GotoFound;
     protected static String Found;
     protected static String Location = MainActivity.targetBuilding;
 
@@ -66,75 +64,19 @@ public class listFragment extends Fragment {
 
 
 
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment listFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static listFragment newInstance(String param1, String param2) {
-//        listFragment fragment = new listFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        GotoPublish = view.findViewById(R.id.publish);
-        GotoFound = view.findViewById(R.id.toFound);
         listView =  view.findViewById(R.id.item_list);
         Found = "False";
-        if (Found.equals("False")) GotoFound.setText("Go to found list");
-        else GotoFound.setText("Go to lost list");
         fetchData();
 
         updateClosestBuilding update = new updateClosestBuilding(listFragment.this);
         new Thread(update).start();
-
-
-        GotoPublish.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
-                intent.putExtra("Location", Location);
-                intent.putExtra("Found",Found);
-                startActivity(intent);
-            }
-        });
-
-        GotoFound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Found.equals("False")){
-                    Found = "True";
-                }
-                else{
-                    Found = "False";
-                }
-                if (Found.equals("False")) GotoFound.setText("Go to found list");
-                else GotoFound.setText("Go to lost list");
-                items.clear();
-                fetchData();
-            }
-        });
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -163,42 +105,40 @@ public class listFragment extends Fragment {
                 });
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu items for use in the action bar
+        inflater.inflate(R.menu.publish_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.menu_publish){
+            //What you want(Code Here)
+            Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
+            intent.putExtra("Location", Location);
+            intent.putExtra("Found",Found);
+            startActivity(intent);
+            return true;
+        }
+        if(id == R.id.menu_gotofoundlist){
+            //What you want(Code Here)
+            if (Found.equals("False")){
+                Found = "True";
+            }
+            else{
+                Found = "False";
+            }
+            if (Found.equals("False")) item.setTitle("Go to found list");
+            else item.setTitle("Go to lost list");
+            items.clear();
+            fetchData();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
