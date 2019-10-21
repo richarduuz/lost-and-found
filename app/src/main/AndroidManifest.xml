@@ -32,7 +32,7 @@
         </provider>
 
         <activity android:name=".MapsActivity" />
-
+        <activity android:name=".ChatRoom" />
         <activity android:name=".Building_Items" />
         <activity android:name=".Register" />
         <activity android:name=".BuildingActivity" />

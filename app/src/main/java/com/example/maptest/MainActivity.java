@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private mapFragment map_fragment;
     private listFragment list_fragment;
     private MeFragment meFragment;
+    private chatListFragment chat_list_fragment;
     public static String targetBuilding = "Doug McDonell";
 //    private MessageFragment messageFragment;
 //    private MeFragment meFragment;
@@ -84,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(1);
                     return true;
                 }
-//                case R.id.navigation_message:{
-//                    viewPager.setCurrentItem(2);
-//                    return true;
-//                }
-                case R.id.navigation_me:{
+                case R.id.navigation_message:{
                     viewPager.setCurrentItem(2);
+                    return true;
+                }
+                case R.id.navigation_me:{
+                    viewPager.setCurrentItem(3);
                     return true;
                 }
             }
@@ -106,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
         map_fragment = new mapFragment();
         meFragment = new MeFragment();
         list_fragment = new listFragment();
+        chat_list_fragment = new chatListFragment();
         fragmentList.add(map_fragment);
         fragmentList.add(list_fragment);
+        fragmentList.add(chat_list_fragment);
         fragmentList.add(meFragment);
 
 
