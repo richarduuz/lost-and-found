@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -135,7 +138,12 @@ public class mapFragment extends Fragment {
                                     }
                                     for (String building : buildings.keySet()) {
                                         //mMap.addMarker(new MarkerOptions().position(buildings.get(building)).title(building));
-                                        map.addMarker(new MarkerOptions().position(buildings.get(building)).title(building));
+                                        int height = 150;
+                                        int width = 150;
+                                        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.marker5);
+                                        Bitmap b=bitmapdraw.getBitmap();
+                                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                                        map.addMarker(new MarkerOptions().position(buildings.get(building)).title(building).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
                                         building2Marker.add(building);
                                         buildingMarkerClick.add(0);
                                     }
