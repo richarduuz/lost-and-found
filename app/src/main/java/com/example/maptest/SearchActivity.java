@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.server.converter.StringToIntConverter;
@@ -45,6 +47,10 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Log.d("search", "intent");
         building2Marker = intent.getStringArrayListExtra("building");
+        if (building2Marker.isEmpty()){
+            Log.d("search", "null");
+            fetchData();
+        }
 
         searchView = findViewById(R.id.searchview);
         searchListView = findViewById(R.id.searchlistview);
@@ -102,6 +108,39 @@ public class SearchActivity extends AppCompatActivity {
                 finish();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void fetchData(){
+//        fetch data from firebase if click search before the map is ready
+        FirebaseFirestore db= FirebaseFirestore.getInstance();
+        CollectionReference collection=db.collection("test");
+        db.collection("test")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task){
+                        if (task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                building2Marker.add((String)document.get("Name"));
+                            }
+                        }
+                    }
+                });
     }
 
 }
