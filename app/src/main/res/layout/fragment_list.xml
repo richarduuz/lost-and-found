@@ -17,4 +17,39 @@
 
     </LinearLayout>
 
+    <!--&lt;!&ndash;<androidx.constraintlayout.widget.ConstraintLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="60dp">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/toFound"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="Go to found list"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintHorizontal_bias="1.0"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintWidth_percent="0.5"&ndash;&gt;-->
+            <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<Button&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/publish"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="publish"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="0.5"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintHorizontal_bias="0.011"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintLeft_toRightOf="@+id/gotofound"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:layout_constraintWidth_percent="0.5"&ndash;&gt;-->
+            <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+
+
+
+    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+
 </LinearLayout>

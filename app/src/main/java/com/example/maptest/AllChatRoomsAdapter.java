@@ -31,6 +31,7 @@ public class AllChatRoomsAdapter extends ArrayAdapter<ChatUser> {
         super(context, resource, chatUser);
         this.resourceId=resource;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         ChatUser users=getItem(position);

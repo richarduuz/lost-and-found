@@ -33,11 +33,11 @@
 
         <activity android:name=".MapsActivity" />
         <activity android:name=".ChatRoom" />
-        <activity android:name=".Building_Items" />
         <activity android:name=".Register" />
         <activity android:name=".BuildingActivity" />
         <activity android:name=".GoToPublishItems" />
         <activity android:name=".Login" />
+        <activity android:name=".ItemDetail" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

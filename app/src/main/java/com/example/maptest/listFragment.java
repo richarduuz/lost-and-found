@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -50,67 +51,83 @@ public class listFragment extends Fragment {
 //
 //    private OnFragmentInteractionListener mListener;
 
-
-
-
-    protected ArrayList<PublishItem> items=new ArrayList<>();
+    protected static ArrayList<PublishItem> items=new ArrayList<>();
     protected static ListView listView;
     protected static ListDemoAdapter mAdapter=null;
+    /*
+    private Button GotoPublish;
+    private Button GotoFound;
+    rearrange these buttons;
+     */
+
     protected static String Found;
     protected static String Location = MainActivity.targetBuilding;
-
-
-
-
-
-
     public listFragment() {
         // Required empty public constructor
     }
-
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+//        GotoPublish = view.findViewById(R.id.publish);
+//        GotoFound = view.findViewById(R.id.toFound);
         listView =  view.findViewById(R.id.item_list);
         Found = "False";
+//        if (Found.equals("False")) GotoFound.setText("Go to found list");
+//        else GotoFound.setText("Go to lost list");
         fetchData();
         updateClosestBuilding update = new updateClosestBuilding(listFragment.this);
         new Thread(update).start();
         setHasOptionsMenu(true);
+//        GotoPublish.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View view){
+//                Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
+//                intent.putExtra("Location", Location);
+//                intent.putExtra("Found",Found);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        GotoFound.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (Found.equals("False")){
+//                    Found = "True";
+//                }
+//                else{
+//                    Found = "False";
+//                }
+//                if (Found.equals("False")) GotoFound.setText("Go to found list");
+//                else GotoFound.setText("Go to lost list");
+//                items.clear();
+//                fetchData();
+//            }
+//        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the selected item text from ListView
+                PublishItem item = (PublishItem) parent.getItemAtPosition(position);
+                String userId = item.getPublisher();
+                String itemname = item.getItemName();
+                String itemdescription = item.getItemDiscription();
+                String Contact = item.getContact();
+                String Phone = item.getPhone();
+                int image = item.getItemImage();
+                Intent intent=new Intent(listFragment.this.getActivity(), ItemDetail.class);
+                intent.putExtra("uid", userId);
+                intent.putExtra("image", String.valueOf(image));
+                intent.putExtra("name", itemname);
+                intent.putExtra("description", itemdescription);
+                intent.putExtra("contactName", Phone);
+                intent.putExtra("Phone", Contact);
+                startActivity(intent);
+            }
+        });
         return view;
     }
-
-    public void fetchData(){
-        items.clear();
-        FirebaseFirestore db=FirebaseFirestore.getInstance();
-        db.collection(Location)
-                .whereEqualTo("Found", Found)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            for (QueryDocumentSnapshot document:task.getResult()){
-                                int Image=R.drawable.noimage;
-                                if(document.contains("Image")) {}//TODO process the image
-                                String Name=(String)document.get("Name");
-                                String Description=(String)document.get("Description");
-                                items.add(new PublishItem(Image,Name,Description,"False"));
-
-                            }
-                            mAdapter=new ListDemoAdapter(listFragment.this.getActivity(), R.layout.list_layout, items);
-                            System.out.println("ready for content: " + Location);
-                            listView.setAdapter(mAdapter);
-                        }
-                    }
-                });
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -123,10 +140,6 @@ public class listFragment extends Fragment {
         actionView.setShowText(true);
         actionView.setTextOn("Found");
         actionView.setTextOff("Lost");
-//        if (Found.equals("False"))
-//            switch_item.setTitle("Go to found list");
-//        else
-//            switch_item.setTitle("Go to lost list");
         actionView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
@@ -140,42 +153,37 @@ public class listFragment extends Fragment {
                     Found = "False";
                     switch_item.setTitle("Lost");
                 }
-//                if (Found.equals("False")) item.setTitle("Go to found list");
-//                else item.setTitle("Go to lost list");
                 items.clear();
                 fetchData();
-                }
+            }
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if(id == R.id.menu_publish){
-//            //What you want(Code Here)
-//            Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
-//            intent.putExtra("Location", Location);
-//            intent.putExtra("Found",Found);
-//            startActivity(intent);
-//            return true;
-//        }
-//        if(id == R.id.menu_gotofoundlist){
-//            //What you want(Code Here)
-//            if (Found.equals("False")){
-//                Found = "True";
-//            }
-//            else{
-//                Found = "False";
-//            }
-//            if (Found.equals("False")) item.setTitle("Go to found list");
-//            else item.setTitle("Go to lost list");
-//            items.clear();
-//            fetchData();
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
+    public void fetchData(){
+        FirebaseFirestore db=FirebaseFirestore.getInstance();
+        db.collection(Location)
+                .whereEqualTo("Found", Found)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (listFragment.this.getActivity()!=null&&task.isSuccessful()){
+                            for (QueryDocumentSnapshot document:task.getResult()){
+                                int Image=R.drawable.noimage;
+                                if(document.contains("Image")) {}//TODO process the image
+                                String Name=(String)document.get("Name");
+                                String Description=(String)document.get("Description");
+                                String Uid=(String)document.get("publisher");
+                                String Contact = (String)document.get("Contact");
+                                String Phone = (String)document.get("Phone");
+                                items.add(new PublishItem(Image,Name,Description,Uid,"False", Contact, Phone));
+                            }
+                            mAdapter=new ListDemoAdapter(listFragment.this.getActivity(), R.layout.list_layout, items);
+                            System.out.println("ready for content");
+                            listView.setAdapter(mAdapter);
+                        }
+                    }
+                });
+    }
 }

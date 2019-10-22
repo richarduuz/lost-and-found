@@ -41,8 +41,10 @@ public class updateClosestBuilding implements Runnable {
                                         if(document.contains("Image")) {}//TODO process the image
                                         String Name=(String)document.get("Name");
                                         String Description=(String)document.get("Description");
-                                        itemList.add(new PublishItem(Image,Name,Description,"False"));
-
+                                        String Phone = (String)document.get("Phone");
+                                        String Contact = (String)document.get("Contact");
+                                        String Uid=(String)document.get("publisher");
+                                        itemList.add(new PublishItem(Image,Name,Description,"False", Uid, Contact, Phone));
                                     }
                                     listFragment.mAdapter = new ListDemoAdapter(list.getActivity(), R.layout.list_layout, itemList);
 //                                    for (PublishItem i:items){

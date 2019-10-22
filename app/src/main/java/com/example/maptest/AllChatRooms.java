@@ -10,6 +10,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,8 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class AllChatRooms extends AppCompatActivity {
-    private String uid = "HeoJb4NSYOO1rqaTQJ2F8kggzEy1";
+    private String currentUid;
     private String TAG = "MAPTEST";
+    private final String ALLSESSIONS="AllSessions";
     private ArrayList<ChatUser> allUsers= new ArrayList<>();
     private AllChatRoomsAdapter mAdapter = null;
     private ListView listView;
@@ -30,8 +32,9 @@ public class AllChatRooms extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_chatrooms);
+        currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(uid);
+        DatabaseReference myRef = database.getReference(ALLSESSIONS).child(currentUid);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

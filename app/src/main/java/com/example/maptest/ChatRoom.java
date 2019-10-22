@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,78 +43,82 @@ public class ChatRoom extends AppCompatActivity{
     private String TAG="TEST";
     private MessageAdapter mAdapter = null;
     private ArrayList<Message> messages= new ArrayList<>();
-    private String thisSender="HeoJb4NSYOO1rqaTQJ2F8kggzEy1";
+    private final String ALLSESSIONS="AllSessions";
+    private String currentUid=null;
+    private String uid=null;
     private ListView listView;
     private ImageButton sendMessage;
     private EditText messageBox;
-    private int lastMessage = 0;
+    private long lastMessage=0;
+    private FirebaseDatabase database;
+    private String sessionKey=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
         Intent intent=getIntent();
-        String uid = intent.getStringExtra("uid");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("HeoJb4NSYOO1rqaTQJ2F8kggzEy1").child(uid);
+        currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = intent.getStringExtra("uid");
         sendMessage=findViewById(R.id.sendMessage);
         messageBox=findViewById(R.id.messageBox);
-
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(ALLSESSIONS);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot sessionSnapshot:dataSnapshot.getChildren()){
+                    if(!(sessionSnapshot.getKey().equals("Length"))&&isSameUsers(sessionSnapshot)){
+                        lastMessage=(Long)sessionSnapshot.child("MLength").getValue();
+                        messages.clear();
+                        for(DataSnapshot messageSnapshot:sessionSnapshot.child("History").getChildren()){
+                            String content=(String)messageSnapshot.child("content").getValue();
+                            String sender=(String)messageSnapshot.child("sender").getValue();
+                            long myTimeStamp=(long)messageSnapshot.child("timeStamp").getValue();
+                            Message message;
+                            if(sender.equals(currentUid)) message=new Message(content, sender, myTimeStamp, TRUE);
+                            else message=new Message(content, sender, myTimeStamp, FALSE);
+                            messages.add(message);
+                        }
+                        Collections.sort(messages, new Comparator<Message>() {
+                            @Override
+                            public int compare(Message message1, Message message2) {
+                                return (message1.getTimeStamp()<message2.getTimeStamp()?0:1);
+                            }
+                        });
+                        mAdapter=new MessageAdapter(ChatRoom.this, messages);
+                        listView=(ListView)findViewById(R.id.messages_view);
+                        listView.setAdapter(mAdapter);
+                        break;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    String sender=thisSender;
+                    DatabaseReference newMyRef = database.getReference(ALLSESSIONS).child(sessionKey);
+                    String sender=currentUid;
                     String content=messageBox.getText().toString().trim();
                     long currentTime=System.currentTimeMillis();
                     Message message = new Message(content, sender,currentTime);
                     Map<String, Object> sendMyMessage=new HashMap<>();
-                    String key=lastMessage+1+"";
+                    String key=++lastMessage+"";
                     key="Message"+key;
                     sendMyMessage.put(key,message);
-                    myRef.updateChildren(sendMyMessage);
+                    newMyRef.child("History").updateChildren(sendMyMessage);
+                    newMyRef.child("MLength").setValue(lastMessage);
                     messageBox.setText("");
+                    lastMessage=0;
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                lastMessage=0;
-                messages.clear();
-                for(DataSnapshot messageSnapshot:dataSnapshot.getChildren()){
-                    lastMessage++;
-                    String content=(String)messageSnapshot.child("content").getValue();
-                    String sender=(String)messageSnapshot.child("sender").getValue();
-                    long myTimeStamp=(long)messageSnapshot.child("timeStamp").getValue();
-                    Message message;
-                    if(sender.equals(thisSender)) message=new Message(content, sender, myTimeStamp, TRUE);
-                    else message=new Message(content, sender, myTimeStamp, FALSE);
-                    messages.add(message);
-                }
-                Collections.sort(messages, new Comparator<Message>() {
-                    @Override
-                    public int compare(Message message1, Message message2) {
-                        return (message1.getTimeStamp()<message2.getTimeStamp()?0:1);
-                    }
-                });
-                mAdapter=new MessageAdapter(ChatRoom.this, messages);
-                listView=(ListView)findViewById(R.id.messages_view);
-                listView.setAdapter(mAdapter);
-                Log.d(TAG, "Value is: ");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setHomeButtonEnabled(true);
@@ -120,6 +126,23 @@ public class ChatRoom extends AppCompatActivity{
         }
 
     }
+
+    public boolean isSameUsers(DataSnapshot sessionSnapshot){
+        String uidA=(String) sessionSnapshot.child("UId1").getValue();
+        String uidB=(String) sessionSnapshot.child("UId2").getValue();
+        if ((currentUid.equals(uidA))&&uid.equals(uidB)||(currentUid.equals(uidB)&&uid.equals(uidA))){
+            sessionKey=sessionSnapshot.getKey();
+            return true;
+        }
+        else return false;
+    }
+
+    public boolean isSameUsers(String uid1, String uid2){
+        if((currentUid.equals(uid1)&&uid.equals(uid2))||(currentUid.equals(uid2)&&uid.equals(uid1)))
+            return true;
+        else return false;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         fragmentInit();
 
         fragmentAdpater = new FragmentAdapter(this.getSupportFragmentManager(), fragmentList);
@@ -43,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(4);
 
         viewPager.setCurrentItem(0);
-
         btmMenu = findViewById(R.id.bottom_menu);
         btmMenu.setOnNavigationItemSelectedListener(btmNavigationSelectedListener);
-
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -61,32 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                if (state == 2){
-                    switch (viewPager.getCurrentItem()){
-                        case 0:
-                            btmMenu.setSelectedItemId(R.id.navigation_map);
-                            break;
-                        case 1:
-                            btmMenu.setSelectedItemId(R.id.navigation_list);
-                            break;
-                        case 2:
-                            btmMenu.setSelectedItemId(R.id.navigation_message);
-                            break;
-                        case 3:
-                            btmMenu.setSelectedItemId(R.id.navigation_me);
-                            break;
-                    }
-                }
+
             }
         });
-
-
-
-
-
-
-
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener btmNavigationSelectedListener
@@ -105,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
                 case R.id.navigation_message:{
+
                     viewPager.setCurrentItem(2);
                     return true;
                 }

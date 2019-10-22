@@ -28,10 +28,14 @@ public class ItemDetail extends AppCompatActivity {
     private String uid;
     private String name;
     private String description;
+    private String contact;
+    private String phone;
     private int image;
     private TextView item_name;
     private TextView item_description;
     private TextView item_publisher;
+    private TextView item_contact;
+    private TextView item_phone;
     private ImageView item_image;
     private Button start_chat;
     private final String ALLSESSIONS="AllSessions";
@@ -46,11 +50,15 @@ public class ItemDetail extends AppCompatActivity {
         uid=intent.getStringExtra("uid");
         name=intent.getStringExtra("name");
         description=intent.getStringExtra("description");
+        contact=intent.getStringExtra("contactName");
+        phone=intent.getStringExtra("phone");
         image=Integer.parseInt(intent.getStringExtra("image"));
         setContentView(R.layout.item_detail);
         item_name=(TextView)findViewById(R.id.item_detail_name);
         item_description=(TextView)findViewById(R.id.item_detail_description);
         item_publisher=(TextView)findViewById(R.id.item_publisher);
+        item_contact=(TextView)findViewById(R.id.item_contact);
+        item_phone=(TextView)findViewById(R.id.item_phone);
         item_image=(ImageView)findViewById(R.id.item_detail_image);
         start_chat=(Button)findViewById(R.id.start_chat);
         item_name.setText(name);
@@ -64,6 +72,9 @@ public class ItemDetail extends AppCompatActivity {
                 if (currentUser != null) {
                     currentUid=currentUser.getUid();
                     database = FirebaseDatabase.getInstance();
+                    if (currentUid.equals(uid)){Toast.makeText(ItemDetail.this, "Hey you publish this item yourself!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
                     DatabaseReference myRef = database.getReference(ALLSESSIONS);
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -104,7 +115,7 @@ public class ItemDetail extends AppCompatActivity {
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
-                    });
+                    });}
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetail.this);
                     builder.setTitle("Please Login First!!!");
