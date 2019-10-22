@@ -7,14 +7,16 @@
     tools:context=".mapFragment">
 
 
-
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/searchTextView"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-
-        android:text="FFHIRHFURFHRUFRUFHRUFR" />
+        android:layout_marginTop="1dp"
+        android:layout_height="40dp"
+        android:text="Search here"
+        android:clickable="true"
+        android:textSize="20dp"
+        android:background="@drawable/border"
+        android:gravity="center" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

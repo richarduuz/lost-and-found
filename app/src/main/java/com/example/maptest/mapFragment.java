@@ -79,7 +79,7 @@ public class mapFragment extends Fragment {
     public static ArrayList<String> building2Marker= new ArrayList<>();
     public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
     private static final int REQUEST_CODE = 1;
-    private final float SEARCHZOOM = 18;
+    private final float SEARCHZOOM = 19;
 
     @BindView(R.id.mapView)
     MapView mapView;
@@ -90,50 +90,12 @@ public class mapFragment extends Fragment {
         // Required empty public constructor
     }
 
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment mapFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static mapFragment newInstance(String param1, String param2) {
-//        mapFragment fragment = new mapFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        mapView =
-//
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, view);
-
-        goToSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                intent.putExtra("building", building2Marker);
-//                startActivity(intent);
-                startActivityForResult(intent,REQUEST_CODE);
-            }
-        });
-
-
-
 
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
@@ -233,12 +195,24 @@ public class mapFragment extends Fragment {
 
         }
 
+        // -------------- implementation of searching function
+        goToSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("search", "button click");
+                Intent intent = new Intent(mapFragment.this.getActivity(), SearchActivity.class);
+                intent.putExtra("building", building2Marker);
+                startActivityForResult(intent,REQUEST_CODE);
+            }
+        });
+
         closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
         new Thread(c).start();
 
         return view;
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){

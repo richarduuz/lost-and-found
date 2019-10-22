@@ -15,12 +15,27 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.annotation.Nonnull;
 
 public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private ListView searchListView;
+    public static ArrayList<String> building2Marker= new ArrayList<>();
 
 
     @Override
@@ -28,38 +43,46 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
         Intent intent = getIntent();
+        Log.d("search", "intent");
+        building2Marker = intent.getStringArrayListExtra("building");
 
         searchView = findViewById(R.id.searchview);
+        searchListView = findViewById(R.id.searchlistview);
 
         //show the submission button
         searchView.setSubmitButtonEnabled(true);
         //show hint to enter query
         searchView.setQueryHint("please enter ...");
         searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-
-        searchListView = findViewById(R.id.searchlistview);
-
+        searchView.setIconifiedByDefault(false);
         //setup adapter for listview
-        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, intent.getStringArrayListExtra("building"));
+        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, building2Marker);
         searchListView.setAdapter(adapter);
         searchListView.setTextFilterEnabled(false);
-        //filter for searching
         Filter filter = adapter.getFilter();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("text", "onQueryTextSubmit");
-                Intent resultintent = new Intent();
-                resultintent.putExtra("Query", query);
-                setResult(RESULT_OK,resultintent);
-                finish();
+                filter.filter(query);
+                if (searchListView.getAdapter().getCount() == 0){
+                    Toast.makeText(SearchActivity.this, "No Results" , Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String result_query = (String)searchListView.getItemAtPosition(0);
+                    Intent result_intent = new Intent();
+                    result_intent.putExtra("Query", result_query);
+                    setResult(RESULT_OK,result_intent);
+                    finish();
+                }
+
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(TextUtils.isEmpty(newText)){
-                    filter.filter("?");
+                    filter.filter("");
                     Log.d("text", "empty");
                 }else{
                     filter.filter(newText);
@@ -73,9 +96,9 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("Search", searchListView.getAdapter().getItem(i).toString());
-                Intent resultintent = new Intent();
-                resultintent.putExtra("Query", searchListView.getAdapter().getItem(i).toString());
-                setResult(RESULT_OK,resultintent);
+                Intent resulti = new Intent();
+                resulti.putExtra("Query", searchListView.getAdapter().getItem(i).toString());
+                setResult(RESULT_OK,resulti);
                 finish();
             }
         });
