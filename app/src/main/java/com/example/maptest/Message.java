@@ -4,7 +4,7 @@ package com.example.maptest;
 import java.sql.Timestamp;
 import java.util.Comparator;
 
-public class Message {
+public class Message{
     private String Content;
     private String Sender;
     private long TimeStamp;

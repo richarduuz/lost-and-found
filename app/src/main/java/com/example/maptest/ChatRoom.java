@@ -58,6 +58,7 @@ public class ChatRoom extends AppCompatActivity{
     private FirebaseDatabase database;
     private String sessionKey=null;
     private String contact=null;
+    private String parent;
 
     public static final String CHANNEL_MESSAGE_ID = "102";
     public static final String CHANNEL_MESSAGE_NAME = "MESSAGE";
@@ -78,6 +79,7 @@ public class ChatRoom extends AppCompatActivity{
         currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         uid = intent.getStringExtra("uid");
         contact = intent.getStringExtra("contactName");
+        parent = intent.getStringExtra("parent");
         sendMessage=findViewById(R.id.sendMessage);
         messageBox=findViewById(R.id.messageBox);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -101,14 +103,14 @@ public class ChatRoom extends AppCompatActivity{
                         Collections.sort(messages, new Comparator<Message>() {
                             @Override
                             public int compare(Message message1, Message message2) {
-                                return (message1.getTimeStamp()<message2.getTimeStamp()?0:1);
+                                return (message1.getTimeStamp()<message2.getTimeStamp()?-1:1);
                             }
                         });
                         mAdapter=new MessageAdapter(ChatRoom.this, messages);
                         listView=(ListView)findViewById(R.id.messages_view);
                         listView.setAdapter(mAdapter);
                         if (isOpponentSendMessage(messages)){
-                            sendNotification();
+                            if (parent==null) sendNotification();
                         }
                         break;
                     }
@@ -186,6 +188,9 @@ public class ChatRoom extends AppCompatActivity{
         builder.setContentTitle("New Message");
         builder.setContentText("You have received a new message!");
         Intent intent = new Intent(this, ChatRoom.class);//点击通知进入哪个画面
+        intent.putExtra("uid", uid);
+        intent.putExtra("contactName",contact);
+        intent.putExtra("parent", "Notificatoin");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, intent, PendingIntent.FLAG_ONE_SHOT);
         builder.setContentIntent(pendingIntent);
