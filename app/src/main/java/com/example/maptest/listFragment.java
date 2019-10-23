@@ -2,6 +2,8 @@ package com.example.maptest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +36,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
@@ -116,10 +121,10 @@ public class listFragment extends Fragment {
                 String itemdescription = item.getItemDiscription();
                 String Contact = item.getContact();
                 String Phone = item.getPhone();
-                int image = item.getItemImage();
+                String image = item.getItemImage();
                 Intent intent=new Intent(listFragment.this.getActivity(), ItemDetail.class);
                 intent.putExtra("uid", userId);
-                intent.putExtra("image", String.valueOf(image));
+                intent.putExtra("image", image);
                 intent.putExtra("name", itemname);
                 intent.putExtra("description", itemdescription);
                 intent.putExtra("contactName", Contact);
@@ -195,8 +200,10 @@ public class listFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (listFragment.this.getActivity()!=null&&task.isSuccessful()){
                             for (QueryDocumentSnapshot document:task.getResult()){
-                                int Image=R.drawable.noimage;
-                                if(document.contains("Image")) {}//TODO process the image
+                                String Image = "null";
+                                if(document.contains("Image")) {
+                                    Image = (String)document.get("Image");
+                                }//TODO process the image
                                 String Name=(String)document.get("Name");
                                 String Description=(String)document.get("Description");
                                 String Uid=(String)document.get("publisher");
@@ -222,4 +229,5 @@ public class listFragment extends Fragment {
         Location.distanceBetween(user.latitude, user.longitude, buidling.latitude, buidling.longitude, result);
         return result[0];
     }
+
 }

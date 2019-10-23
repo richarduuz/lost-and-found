@@ -1,6 +1,9 @@
 package com.example.maptest;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +46,15 @@ public class ListDemoAdapter extends ArrayAdapter<PublishItem> {
             view=convertView;
             viewHolder=(ViewHolder)view.getTag();
         }
-        viewHolder.image.setImageResource(item.getItemImage());
+        String image = item.getItemImage();
+        if (image == null || image.equals("null")){
+            viewHolder.image.setImageResource(R.drawable.noimage);
+        }
+        else {
+            byte[] data = Base64.decode(item.getItemImage(), Base64.DEFAULT);
+            Bitmap bp = BitmapFactory.decodeByteArray(data, 0, data.length);
+            viewHolder.image.setImageBitmap(bp);
+        }
         viewHolder.text.setText(item.getItemName()+'\n'+item.getItemDiscription());
 
         return view;

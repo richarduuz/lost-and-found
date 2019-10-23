@@ -64,8 +64,10 @@ public class BuildingActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
                             for (QueryDocumentSnapshot document:task.getResult()){
-                                int Image=R.drawable.noimage;
-                                if(document.contains("Image")) {}//TODO process the image
+                                String Image = "null";
+                                if(document.contains("Image")) {
+                                    Image = (String)document.get("Image");
+                                }//TODO process the image
                                 String Name=(String)document.get("Name");
                                 String Description=(String)document.get("Description");
                                 String Phone = (String)document.get("Phone");
@@ -88,10 +90,10 @@ public class BuildingActivity extends AppCompatActivity {
                                     String itemdescription = item.getItemDiscription();
                                     String Contact = item.getContact();
                                     String Phone = item.getPhone();
-                                    int image = item.getItemImage();
+                                    String image = item.getItemImage();
                                     Intent intent=new Intent(BuildingActivity.this, ItemDetail.class);
                                     intent.putExtra("uid", userId);
-                                    intent.putExtra("image", String.valueOf(image));
+                                    intent.putExtra("image", image);
                                     intent.putExtra("name", itemname);
                                     intent.putExtra("description", itemdescription);
                                     intent.putExtra("contactName", Contact);

@@ -183,6 +183,12 @@ public class MeFragment extends Fragment {
                             }
                         }
                     });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
                     AlertDialog alert = builder.create();
                     alert.show();
                 }

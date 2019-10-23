@@ -2,7 +2,10 @@ package com.example.maptest;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,7 +34,7 @@ public class ItemDetail extends AppCompatActivity {
     private String description;
     private String contact;
     private String phone;
-    private int image;
+    private String image;
     private TextView item_name;
     private TextView item_description;
     private TextView item_publisher;
@@ -43,6 +46,8 @@ public class ItemDetail extends AppCompatActivity {
     private FirebaseDatabase database;
     private String sessionKey=null;
 
+    private Bitmap bp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -53,7 +58,7 @@ public class ItemDetail extends AppCompatActivity {
         description=intent.getStringExtra("description");
         contact=intent.getStringExtra("contactName");
         phone=intent.getStringExtra("Phone");
-        image=Integer.parseInt(intent.getStringExtra("image"));
+        image=intent.getStringExtra("image");
         setContentView(R.layout.item_detail);
         item_name=(TextView)findViewById(R.id.item_detail_name);
         item_description=(TextView)findViewById(R.id.item_detail_description);
@@ -63,7 +68,14 @@ public class ItemDetail extends AppCompatActivity {
         start_chat=(Button)findViewById(R.id.start_chat);
         item_name.setText(name);
         item_description.setText(description);
-        item_image.setImageResource(image);
+        if (image == null || image.equals("null")){
+            item_image.setImageResource(R.drawable.noimage);
+        }
+        else{
+            stringToBitmap(image);
+            item_image.setImageBitmap(bp);
+        }
+
         item_contact.setText(contact);
         item_phone.setText(phone);
         start_chat.setOnClickListener(new View.OnClickListener() {
@@ -138,5 +150,10 @@ public class ItemDetail extends AppCompatActivity {
             return true;
         }
         else return false;
+    }
+
+    public void stringToBitmap(String image){
+        byte[] data = Base64.decode(image, Base64.DEFAULT);
+        bp = BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 }
