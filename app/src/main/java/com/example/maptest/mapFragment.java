@@ -73,7 +73,7 @@ public class mapFragment extends Fragment {
 //
 //    private OnFragmentInteractionListener mListener;
     private String provider;
-    private LatLng myLocation;
+    protected static LatLng myLocation;
     public static String targetBuilding = "Alice Hoy";
     private GoogleMap map;
     private LocationManager locationManager;
@@ -91,6 +91,7 @@ public class mapFragment extends Fragment {
 
     public mapFragment() {
         // Required empty public constructor
+
     }
 
     @Override
@@ -215,8 +216,8 @@ public class mapFragment extends Fragment {
             }
         });
 
-        closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
-        new Thread(c).start();
+//        closestBuilding c = new closestBuilding(myLocation, buildings, locationManager);
+//        new Thread(c).start();
 
         return view;
     }

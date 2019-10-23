@@ -7,12 +7,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     private FragmentAdapter fragmentAdpater;
     private BottomNavigationView btmMenu;
+    private String provider;
+    private LatLng myLocation;
+    private LocationManager locationManager;
 
     private String[] FragmentTitles = {"Map", "List", "Message", "Me"};
 
@@ -34,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
 
 
         fragmentInit();
@@ -102,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.mainViewPager);
         map_fragment = new mapFragment();
         meFragment = new MeFragment();
-        list_fragment = new listFragment();
+        list_fragment = new listFragment(mapFragment.buildings, mapFragment.myLocation);
         chat_list_fragment = new chatListFragment();
         fragmentList.add(map_fragment);
         fragmentList.add(list_fragment);
