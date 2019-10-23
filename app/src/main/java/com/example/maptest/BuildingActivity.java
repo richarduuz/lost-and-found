@@ -137,10 +137,14 @@ public class BuildingActivity extends AppCompatActivity {
             //What you want(Code Here)
             Intent intent = new Intent(BuildingActivity.this, BuildingActivity.class);
             intent.putExtra("Location", Location);
-            if (Found.equals("False"))
+            if (Found.equals("False")){
                 intent.putExtra("Found", "True");
-            else
+                item.setTitle("Go to found list");
+            }
+            else{
                 intent.putExtra("Found", "False");
+                item.setTitle("Go to lost list");
+            }
             startActivity(intent);
             BuildingActivity.this.finish();
             fetchData();

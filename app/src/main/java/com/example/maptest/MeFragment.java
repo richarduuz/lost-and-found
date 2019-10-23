@@ -80,6 +80,10 @@ public class MeFragment extends Fragment {
     TextView profile;
     @BindView(R.id.change_password)
     Button resetpwd;
+    @BindView(R.id.icon_mood)
+    ImageView ic_mood;
+    @BindView(R.id.icon_email)
+    ImageView ic_email;
 
 
     public MeFragment() {
@@ -198,6 +202,8 @@ public class MeFragment extends Fragment {
             photo.setImageResource(R.drawable.noimage);
             resetpwd.setVisibility(View.INVISIBLE);
             username.setText("Please Login first");
+            ic_mood.setVisibility(View.INVISIBLE);
+            ic_email.setVisibility(View.INVISIBLE);
             profile.setText("");
             signoutbtn.setText("Log in");
             signoutbtn.setOnClickListener(new View.OnClickListener() {

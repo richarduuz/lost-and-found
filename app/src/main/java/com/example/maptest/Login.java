@@ -30,7 +30,6 @@ public class Login extends AppCompatActivity {
     private EditText passsword;
     private Button login;
     private TextView register;
-    private TextView forget;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
@@ -44,7 +43,6 @@ public class Login extends AppCompatActivity {
         email = findViewById(R.id.username);
         passsword = findViewById(R.id.password);
         login = findViewById(R.id.login);
-        forget = findViewById(R.id.forget_textView);
 
 
 
@@ -54,10 +52,7 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
-
-
-
+        
         register = findViewById(R.id.textView);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,14 +68,6 @@ public class Login extends AppCompatActivity {
                 String user_email = email.getText().toString().trim();
                 String user_password = passsword.getText().toString().trim();
                 userLogin(user_email, user_password);
-            }
-        });
-
-        forget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Login.this, ForgetPassword.class);
-                startActivity(intent);
             }
         });
     }
