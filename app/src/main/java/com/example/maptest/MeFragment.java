@@ -1,13 +1,17 @@
 package com.example.maptest;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -42,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.app.Activity.RESULT_OK;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 
 ///**
@@ -57,6 +62,8 @@ public class MeFragment extends Fragment {
     private FirebaseUser user;
     public static final int CAMERA_REQUEST_CODE = 0;
     public static final int GALLERY_REQUEST_CODE = 1;
+    public static final int GALLERY_PERMISSION_CODE = 1;
+    public static final int CAMERA_PERMISSION_CODE = 2;
     private Uri photoUri;
     private MainActivity.FragmentAdapter fragmentAdpater;
     private ViewPager viewPager;
@@ -107,23 +114,19 @@ public class MeFragment extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             switch (i){
                                 case 0:
-                                    File image = new File(getActivity().getExternalCacheDir(), "photo.jpg");
-                                    try {
-                                        if (image.exists()) {
-                                            image.delete();
-                                            image.createNewFile();
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                                    if (checkSelfPermission(MeFragment.this.getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                        requestPermissions(new String[] { Manifest.permission.CAMERA},
+                                                CAMERA_PERMISSION_CODE);
+                                        return;
                                     }
-                                    photoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", image);
-                                    Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                    camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                                    startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
                                     break;
                                 case 1:
-                                    Intent gallery_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    startActivityForResult(gallery_intent, GALLERY_REQUEST_CODE);
+                                    if (checkSelfPermission(MeFragment.this.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                            && checkSelfPermission(MeFragment.this.getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                        requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE,  Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                                GALLERY_PERMISSION_CODE);
+                                        return;
+                                    }
                                     break;
                             }
                         }
@@ -237,6 +240,56 @@ public class MeFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super
+                .onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
+
+        if (requestCode == GALLERY_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("MeFragment", "Gallery Permission Granted.");
+                Intent gallery_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(gallery_intent, GALLERY_REQUEST_CODE);
+            }
+            else {
+                Toast.makeText(MeFragment.this.getActivity(),
+                        "Gallery Permission Denied. You cannot select images from Gallery",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == CAMERA_PERMISSION_CODE){
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                File image = new File(getActivity().getExternalCacheDir(), "photo.jpg");
+                try {
+                    if (image.exists()) {
+                        image.delete();
+                        image.createNewFile();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                photoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", image);
+                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
+            }
+            else {
+                Toast.makeText(MeFragment.this.getActivity(),
+                        "Camera Permission Denied. You cannot select images from Gallery",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
     }
 
 }

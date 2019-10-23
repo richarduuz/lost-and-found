@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -47,6 +48,8 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
 public class GoToPublishItems extends AppCompatActivity {
     private String Location;
     private String Found;
@@ -68,6 +71,8 @@ public class GoToPublishItems extends AppCompatActivity {
     private Button selectIamge;
     private ImageView upload_imageview;
     public static final int GALLERY_REQUEST_CODE = 1;
+    public static final int GALLERY_PERMISSION_CODE = 1;
+    public static final int CAMERA_PERMISSION_CODE = 2;
     private Uri uploadUri;
 
     @Override
@@ -121,27 +126,23 @@ public class GoToPublishItems extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("ButtonClick", "button click");
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                        && ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE,  Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            GALLERY_PERMISSION_CODE);
+                    return;
+                }
             }
         });
         camerabtn = findViewById(R.id.camerabtn);
         camerabtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
-                try {
-                    if (image.exists()) {
-                        image.delete();
-                        image.createNewFile();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.CAMERA},
+                            CAMERA_PERMISSION_CODE);
+                    return;
                 }
-                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
-                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
-                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
             }
         });
 
@@ -177,31 +178,7 @@ public class GoToPublishItems extends AppCompatActivity {
                         Log.w("failure","ERROR");
                     }
                 });
-        camerabtn = findViewById(R.id.camerabtn);
-        camerabtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
-                try {
-                    if (image.exists()) {
-                        image.delete();
-                        image.createNewFile();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
-                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
-                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
-            }
-        });
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null){
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override
@@ -253,6 +230,55 @@ public class GoToPublishItems extends AppCompatActivity {
         byte[] byteArray = stream.toByteArray();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             image_string = Base64.getEncoder().encodeToString(byteArray);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super
+                .onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
+
+        if (requestCode == GALLERY_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+            else {
+                Toast.makeText(GoToPublishItems.this,
+                        "Gallery Permission Denied. You cannot select images from Gallery",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == CAMERA_PERMISSION_CODE){
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
+                try {
+                    if (image.exists()) {
+                        image.delete();
+                        image.createNewFile();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
+                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
+                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
+            }
+            else {
+                Toast.makeText(GoToPublishItems.this,
+                        "Camera Permission Denied. You cannot select images from Gallery",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 
