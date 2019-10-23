@@ -113,6 +113,12 @@ public class BuildingActivity extends AppCompatActivity {
         // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
         // If you don't have res/menu, just create a directory named "menu" inside res
         getMenuInflater().inflate(R.menu.publish_menu, menu);
+        if (Found.equals("False")){
+            menu.getItem(1).setTitle("Go to found list");
+        }
+        else{
+            menu.getItem(1).setTitle("Go to lost list");
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -139,11 +145,9 @@ public class BuildingActivity extends AppCompatActivity {
             intent.putExtra("Location", Location);
             if (Found.equals("False")){
                 intent.putExtra("Found", "True");
-                item.setTitle("Go to found list");
             }
             else{
                 intent.putExtra("Found", "False");
-                item.setTitle("Go to lost list");
             }
             startActivity(intent);
             BuildingActivity.this.finish();
