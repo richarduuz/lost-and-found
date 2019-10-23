@@ -92,7 +92,6 @@ public class ChatRoom extends AppCompatActivity{
                         for(DataSnapshot messageSnapshot:sessionSnapshot.child("History").getChildren()){
                             String content=(String)messageSnapshot.child("content").getValue();
                             String sender=(String)messageSnapshot.child("sender").getValue();
-//                            String contactName = getOtherUsername(sessionSnapshot);
                             long myTimeStamp=(long)messageSnapshot.child("timeStamp").getValue();
                             Message message;
                             if(sender.equals(currentUid)) message=new Message(content, sender, myTimeStamp, TRUE, contact);
@@ -108,7 +107,9 @@ public class ChatRoom extends AppCompatActivity{
                         mAdapter=new MessageAdapter(ChatRoom.this, messages);
                         listView=(ListView)findViewById(R.id.messages_view);
                         listView.setAdapter(mAdapter);
-                        sendNotification();
+                        if (isOpponentSendMessage(messages)){
+                            sendNotification();
+                        }
                         break;
                     }
                 }
@@ -168,6 +169,11 @@ public class ChatRoom extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    public boolean isOpponentSendMessage(ArrayList<Message> messages){
+        Message lastMessage = messages.get(messages.size()-1);
+        return !lastMessage.getSender().equals(currentUid)? true:false;
+    }
+
     public void sendNotification(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "102");
         builder.setTicker("Hello!");
@@ -184,6 +190,5 @@ public class ChatRoom extends AppCompatActivity{
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, intent, PendingIntent.FLAG_ONE_SHOT);
         builder.setContentIntent(pendingIntent);
         manager.notify(2,builder.build());
-
     }
 }
