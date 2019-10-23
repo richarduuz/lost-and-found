@@ -35,7 +35,7 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     private void getToGuide(){
-        Intent intent = new Intent(EntryActivity.this, GuideActivity.class);
+        Intent intent = new Intent(EntryActivity.this, Guide.class);
         startActivity(intent);
         this.finish();
     }
