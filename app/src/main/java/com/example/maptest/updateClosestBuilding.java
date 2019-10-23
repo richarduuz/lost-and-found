@@ -50,6 +50,7 @@ public class updateClosestBuilding implements Runnable {
 //                                    for (PublishItem i:items){
 //                                        System.out.println("Found an item");
 //                                    }
+
                                     listFragment.listView.setAdapter(listFragment.mAdapter);
                                 }
                             }

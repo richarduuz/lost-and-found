@@ -161,6 +161,7 @@ public class listFragment extends Fragment {
     }
 
     public void fetchData(){
+        listFragment.items.clear();
         FirebaseFirestore db=FirebaseFirestore.getInstance();
         db.collection(Location)
                 .whereEqualTo("Found", Found)

@@ -122,6 +122,7 @@ public class mapFragment extends Fragment {
                     return;
                 }
                 map.setMyLocationEnabled(true);
+                building2Marker.clear();
                 FirebaseFirestore db= FirebaseFirestore.getInstance();
                 CollectionReference collection=db.collection("test");
                 db.collection("test")
