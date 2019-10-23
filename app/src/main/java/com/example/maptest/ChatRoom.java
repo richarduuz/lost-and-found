@@ -1,5 +1,8 @@
 package com.example.maptest;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.service.autofill.Dataset;
@@ -14,6 +17,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +49,7 @@ public class ChatRoom extends AppCompatActivity{
     private ArrayList<Message> messages= new ArrayList<>();
     private final String ALLSESSIONS="AllSessions";
     private String currentUid=null;
+    private String currentUserName = null;
     private String uid=null;
     private ListView listView;
     private ImageButton sendMessage;
@@ -52,14 +57,27 @@ public class ChatRoom extends AppCompatActivity{
     private long lastMessage=0;
     private FirebaseDatabase database;
     private String sessionKey=null;
+    private String contact=null;
+
+    public static final String CHANNEL_MESSAGE_ID = "102";
+    public static final String CHANNEL_MESSAGE_NAME = "MESSAGE";
+    public static final String CHANNEL_MESSAGE_DESCRIPTION = "The channel is going to notify the message";
+
+    public NotificationManager manager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationChannel channel_message = new NotificationChannel(CHANNEL_MESSAGE_ID, CHANNEL_MESSAGE_NAME, NotificationManager.IMPORTANCE_HIGH);
+        channel_message.enableVibration(true);
+        manager.createNotificationChannel(channel_message);
         Intent intent=getIntent();
         currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         uid = intent.getStringExtra("uid");
+        contact = intent.getStringExtra("contactName");
         sendMessage=findViewById(R.id.sendMessage);
         messageBox=findViewById(R.id.messageBox);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -74,10 +92,11 @@ public class ChatRoom extends AppCompatActivity{
                         for(DataSnapshot messageSnapshot:sessionSnapshot.child("History").getChildren()){
                             String content=(String)messageSnapshot.child("content").getValue();
                             String sender=(String)messageSnapshot.child("sender").getValue();
+//                            String contactName = getOtherUsername(sessionSnapshot);
                             long myTimeStamp=(long)messageSnapshot.child("timeStamp").getValue();
                             Message message;
-                            if(sender.equals(currentUid)) message=new Message(content, sender, myTimeStamp, TRUE);
-                            else message=new Message(content, sender, myTimeStamp, FALSE);
+                            if(sender.equals(currentUid)) message=new Message(content, sender, myTimeStamp, TRUE, contact);
+                            else message=new Message(content, sender, myTimeStamp, FALSE, contact);
                             messages.add(message);
                         }
                         Collections.sort(messages, new Comparator<Message>() {
@@ -89,6 +108,7 @@ public class ChatRoom extends AppCompatActivity{
                         mAdapter=new MessageAdapter(ChatRoom.this, messages);
                         listView=(ListView)findViewById(R.id.messages_view);
                         listView.setAdapter(mAdapter);
+                        sendNotification();
                         break;
                     }
                 }
@@ -105,7 +125,7 @@ public class ChatRoom extends AppCompatActivity{
                     String sender=currentUid;
                     String content=messageBox.getText().toString().trim();
                     long currentTime=System.currentTimeMillis();
-                    Message message = new Message(content, sender,currentTime);
+                    Message message = new Message(content, sender,currentTime, currentUserName);
                     Map<String, Object> sendMyMessage=new HashMap<>();
                     String key=++lastMessage+"";
                     key="Message"+key;
@@ -137,11 +157,6 @@ public class ChatRoom extends AppCompatActivity{
         else return false;
     }
 
-    public boolean isSameUsers(String uid1, String uid2){
-        if((currentUid.equals(uid1)&&uid.equals(uid2))||(currentUid.equals(uid2)&&uid.equals(uid1)))
-            return true;
-        else return false;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -151,5 +166,24 @@ public class ChatRoom extends AppCompatActivity{
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendNotification(){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "102");
+        builder.setTicker("Hello!");
+        builder.setSmallIcon(R.drawable.ic_launcher_background);
+        builder.setWhen(System.currentTimeMillis());
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        builder.setOngoing(false);
+
+        builder.setContentTitle("New Message");
+        builder.setContentText("You have received a new message!");
+        Intent intent = new Intent(this, ChatRoom.class);//点击通知进入哪个画面
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, intent, PendingIntent.FLAG_ONE_SHOT);
+        builder.setContentIntent(pendingIntent);
+        manager.notify(2,builder.build());
+
     }
 }

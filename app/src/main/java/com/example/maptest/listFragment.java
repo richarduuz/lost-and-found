@@ -79,7 +79,7 @@ public class listFragment extends Fragment {
     protected static String currentLcation = MainActivity.targetBuilding;
 
 
-//    private Handler locationHandler = new Handler(){
+    //    private Handler locationHandler = new Handler(){
 //        public void
 //    };
     public listFragment(HashMap<String, LatLng> buildings, LatLng loc) {
@@ -102,41 +102,10 @@ public class listFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-//        GotoPublish = view.findViewById(R.id.publish);
-//        GotoFound = view.findViewById(R.id.toFound);
         listView =  view.findViewById(R.id.item_list);
         Found = "False";
-//        if (Found.equals("False")) GotoFound.setText("Go to found list");
-//        else GotoFound.setText("Go to lost list");
         fetchData();
-//        updateClosestBuilding update = new updateClosestBuilding(listFragment.this);
-//        new Thread(update).start();
         setHasOptionsMenu(true);
-//        GotoPublish.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view){
-//                Intent intent=new Intent(listFragment.this.getActivity(), GoToPublishItems.class);
-//                intent.putExtra("Location", Location);
-//                intent.putExtra("Found",Found);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        GotoFound.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (Found.equals("False")){
-//                    Found = "True";
-//                }
-//                else{
-//                    Found = "False";
-//                }
-//                if (Found.equals("False")) GotoFound.setText("Go to found list");
-//                else GotoFound.setText("Go to lost list");
-//                items.clear();
-//                fetchData();
-//            }
-//        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,8 +122,8 @@ public class listFragment extends Fragment {
                 intent.putExtra("image", String.valueOf(image));
                 intent.putExtra("name", itemname);
                 intent.putExtra("description", itemdescription);
-                intent.putExtra("contactName", Phone);
-                intent.putExtra("Phone", Contact);
+                intent.putExtra("contactName", Contact);
+                intent.putExtra("Phone", Phone);
                 startActivity(intent);
             }
         });
@@ -236,7 +205,6 @@ public class listFragment extends Fragment {
                                 items.add(new PublishItem(Image,Name,Description,Uid,"False", Contact, Phone));
                             }
                             mAdapter=new ListDemoAdapter(listFragment.this.getActivity(), R.layout.list_layout, items);
-                            System.out.println("ready for content");
                             listView.setAdapter(mAdapter);
                         }
                     }

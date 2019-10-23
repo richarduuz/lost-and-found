@@ -25,6 +25,7 @@ import java.util.Map;
 
 public class ItemDetail extends AppCompatActivity {
     private String currentUid;
+    private String currentUsername;
     private String uid;
     private String name;
     private String description;
@@ -51,12 +52,11 @@ public class ItemDetail extends AppCompatActivity {
         name=intent.getStringExtra("name");
         description=intent.getStringExtra("description");
         contact=intent.getStringExtra("contactName");
-        phone=intent.getStringExtra("phone");
+        phone=intent.getStringExtra("Phone");
         image=Integer.parseInt(intent.getStringExtra("image"));
         setContentView(R.layout.item_detail);
         item_name=(TextView)findViewById(R.id.item_detail_name);
         item_description=(TextView)findViewById(R.id.item_detail_description);
-        item_publisher=(TextView)findViewById(R.id.item_publisher);
         item_contact=(TextView)findViewById(R.id.item_contact);
         item_phone=(TextView)findViewById(R.id.item_phone);
         item_image=(ImageView)findViewById(R.id.item_detail_image);
@@ -64,58 +64,63 @@ public class ItemDetail extends AppCompatActivity {
         item_name.setText(name);
         item_description.setText(description);
         item_image.setImageResource(image);
-        item_publisher.setText(uid);
+        item_contact.setText(contact);
+        item_phone.setText(phone);
         start_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
                     currentUid=currentUser.getUid();
+                    currentUsername = currentUser.getDisplayName();
                     database = FirebaseDatabase.getInstance();
                     if (currentUid.equals(uid)){Toast.makeText(ItemDetail.this, "Hey you publish this item yourself!", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                    DatabaseReference myRef = database.getReference(ALLSESSIONS);
-                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            boolean neverChat=true;
-                            Message message=new Message();
-                            for(DataSnapshot sessionSnapshot: dataSnapshot.getChildren()){
-                                if (!(sessionSnapshot.getKey().equals("Length"))&&isSameUsers(sessionSnapshot)){
-                                    neverChat=false;
+                        DatabaseReference myRef = database.getReference(ALLSESSIONS);
+                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                boolean neverChat=true;
+                                Message message=new Message();
+                                for(DataSnapshot sessionSnapshot: dataSnapshot.getChildren()){
+                                    if (!(sessionSnapshot.getKey().equals("Length"))&&isSameUsers(sessionSnapshot)){
+                                        neverChat=false;
+                                    }
                                 }
+                                if(neverChat){
+                                    DatabaseReference newMyRef = database.getReference(ALLSESSIONS);
+                                    long sessionNum=(long)dataSnapshot.child("Length").getValue();
+                                    String key = "Session"+(++sessionNum);
+                                    newMyRef.child("Length").setValue(sessionNum);
+                                    Map<String, Object> holder =new HashMap<>();
+                                    holder.put(key,"holder");
+                                    newMyRef.updateChildren(holder);
+                                    holder.clear();
+                                    newMyRef = database.getReference(ALLSESSIONS).child(key);
+                                    holder.put("MLength", 1);
+                                    holder.put("UId1", currentUid);
+                                    holder.put("Username1", currentUsername);
+                                    holder.put("UId2", uid);
+                                    holder.put("Username2", contact);
+                                    holder.put("History", "holder");
+                                    newMyRef.updateChildren(holder);
+                                    holder.clear();
+                                    newMyRef = database.getReference(ALLSESSIONS).child(key).child("History");
+                                    message = new Message("Hola", currentUid, System.currentTimeMillis(), currentUsername);
+                                    holder.put("Message1", message);
+                                    newMyRef.updateChildren(holder);
+                                }
+                                Intent intent = new Intent(ItemDetail.this, ChatRoom.class);
+                                intent.putExtra("uid", uid);
+                                intent.putExtra("contactName", contact);
+                                startActivity(intent);
+                                ItemDetail.this.finish();
                             }
-                            if(neverChat){
-                                DatabaseReference newMyRef = database.getReference(ALLSESSIONS);
-                                long sessionNum=(long)dataSnapshot.child("Length").getValue();
-                                String key = "Session"+(++sessionNum);
-                                newMyRef.child("Length").setValue(sessionNum);
-                                Map<String, Object> holder =new HashMap<>();
-                                holder.put(key,"holder");
-                                newMyRef.updateChildren(holder);
-                                holder.clear();
-                                newMyRef = database.getReference(ALLSESSIONS).child(key);
-                                holder.put("MLength", 1);
-                                holder.put("UId1", currentUid);
-                                holder.put("UId2", uid);
-                                holder.put("History", "holder");
-                                newMyRef.updateChildren(holder);
-                                holder.clear();
-                                newMyRef = database.getReference(ALLSESSIONS).child(key).child("History");
-                                message = new Message("Hola", currentUid, System.currentTimeMillis());
-                                holder.put("Message1", message);
-                                newMyRef.updateChildren(holder);
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
                             }
-                            Intent intent = new Intent(ItemDetail.this, ChatRoom.class);
-                            intent.putExtra("uid", uid);
-                            startActivity(intent);
-                            ItemDetail.this.finish();
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });}
+                        });}
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetail.this);
                     builder.setTitle("Please Login First!!!");
@@ -125,7 +130,6 @@ public class ItemDetail extends AppCompatActivity {
             }
         });
     }
-
     public boolean isSameUsers(DataSnapshot sessionSnapshot){
         String uidA=(String) sessionSnapshot.child("UId1").getValue();
         String uidB=(String) sessionSnapshot.child("UId2").getValue();

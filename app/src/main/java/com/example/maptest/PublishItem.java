@@ -49,7 +49,7 @@ public class PublishItem {
 
     public String getPublisher() {return publisher;}
 
-    public String getPhone() {return publisher;}
+    public String getPhone() {return this.Phone;}
 
     public String getContact() {return Contact;}
 
