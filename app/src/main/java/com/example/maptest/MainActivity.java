@@ -2,12 +2,17 @@ package com.example.maptest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private GoogleMap map;
 
     private boolean buildingsGot = false;
+    private static final int GPS_PERMISSION_CODE = 1;
+    private static final int INTERNET_PERMISSION_CODE = 2;
 
     public static HashMap<String, LatLng> buildings= new HashMap<>();
     public static ArrayList<String> building2Marker= new ArrayList<>();
@@ -68,7 +75,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.INTERNET},
+                    INTERNET_PERMISSION_CODE);
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION,  Manifest.permission.ACCESS_COARSE_LOCATION},
+                    GPS_PERMISSION_CODE);
+            return;
+        }
         grabBuildingsData();
 
 
@@ -209,6 +226,44 @@ public class MainActivity extends AppCompatActivity {
 
         public int getCount(){
             return list.size();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super
+                .onRequestPermissionsResult(requestCode,
+                        permissions,
+                        grantResults);
+
+        if (requestCode == GPS_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+            else {
+                Toast.makeText(MainActivity.this,
+                        "GPS Permission Denied. Please Make sure GPS Permission is Grant. Otherwise, the App does not Work",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == INTERNET_PERMISSION_CODE){
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+            else {
+                Toast.makeText(MainActivity.this,
+                        "Internet Permission Denied. Please Make sure Internet Permission is Grant. Otherwise, the App does not Work",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 }
