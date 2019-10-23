@@ -1,11 +1,14 @@
 package com.example.maptest;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +30,7 @@ public class Login extends AppCompatActivity {
     private EditText passsword;
     private Button login;
     private TextView register;
+    private TextView forget;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
@@ -39,6 +44,7 @@ public class Login extends AppCompatActivity {
         email = findViewById(R.id.username);
         passsword = findViewById(R.id.password);
         login = findViewById(R.id.login);
+        forget = findViewById(R.id.forget_textView);
 
 
 
@@ -65,8 +71,16 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String user_email = email.getText().toString().trim();
-                String user_password = email.getText().toString().trim();
+                String user_password = passsword.getText().toString().trim();
                 userLogin(user_email, user_password);
+            }
+        });
+
+        forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login.this, ForgetPassword.class);
+                startActivity(intent);
             }
         });
     }
@@ -84,6 +98,7 @@ public class Login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                            Log.d("forget", email + "+" + password);
                             // Go to the home page in 3 seconds
                             Timer timer = new Timer();
                             TimerTask task1 = new TimerTask() {

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,8 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -68,6 +71,8 @@ public class MeFragment extends Fragment {
     Button signoutbtn;
     @BindView(R.id.profile)
     TextView profile;
+    @BindView(R.id.change_password)
+    Button resetpwd;
 
 
     public MeFragment() {
@@ -137,9 +142,52 @@ public class MeFragment extends Fragment {
                     MeFragment.this.getActivity().finish();
                 }
             });
+
+            resetpwd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Please reter your new password");
+                    final EditText et = new EditText(MeFragment.this.getActivity());
+                    builder.setView(et);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            String new_pwd = et.getText().toString().trim();
+                            if (TextUtils.isEmpty(new_pwd)){
+                                Toast.makeText(MeFragment.this.getActivity(), "The new password cannot be null", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                user.updatePassword(new_pwd)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+//                                                    Toast.makeText(MeFragment.this.getActivity(), "User password updated.", Toast.LENGTH_SHORT).show();
+                                                    Log.d("MeFragment", "User password updated.");
+                                                }
+                                                else{
+//                                                    Toast.makeText(MeFragment.this.getActivity(), "update error ", Toast.LENGTH_SHORT).show();
+                                                    Log.d("MeFragment", "update error");
+                                                }
+                                            }
+                                        });
+                                FirebaseAuth.getInstance().signOut();
+                                Intent sign_out_intent = new Intent(MeFragment.this.getActivity(), MainActivity.class);
+                                startActivity(sign_out_intent);
+                                MeFragment.this.getActivity().finish();
+                            }
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
         }
         else{
             photo.setImageResource(R.drawable.noimage);
+            resetpwd.setVisibility(View.INVISIBLE);
             username.setText("Please Login first");
             profile.setText("");
             signoutbtn.setText("Log in");
