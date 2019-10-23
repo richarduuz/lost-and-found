@@ -75,14 +75,10 @@ public class mapFragment extends Fragment {
 //
 //    private OnFragmentInteractionListener mListener;
     private String provider;
-    protected static LatLng myLocation;
     public static String targetBuilding = "Alice Hoy";
     private GoogleMap map;
     private LocationManager locationManager;
     private final float STARTZOOM=16;
-    public static HashMap<String, LatLng> buildings= new HashMap<>();
-    public static ArrayList<String> building2Marker= new ArrayList<>();
-    public static ArrayList<Integer> buildingMarkerClick=new ArrayList<>();
     private static final int REQUEST_CODE = 1;
     private static final int GPS_PERMISSION_CODE = 1;
     private final float SEARCHZOOM = 19;
@@ -124,53 +120,26 @@ public class mapFragment extends Fragment {
                     return;
                 }
                 map.setMyLocationEnabled(true);
-                building2Marker.clear();
-                FirebaseFirestore db= FirebaseFirestore.getInstance();
-                CollectionReference collection=db.collection("test");
-                db.collection("test")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
-                            @Override
-                            public void onComplete(@Nonnull Task<QuerySnapshot> task){
-                                if (task.isSuccessful()){
-                                    for(QueryDocumentSnapshot document : task.getResult()){
-                                        buildings.put((String)document.get("Name"),new LatLng((double) document.get("Latitude"), (double) document.get("Longitude")));
-                                    }
-                                    for (String building : buildings.keySet()) {
-                                        //mMap.addMarker(new MarkerOptions().position(buildings.get(building)).title(building));
-                                        int height = 150;
-                                        int width = 150;
-                                        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.marker5);
-                                        Bitmap b=bitmapdraw.getBitmap();
-                                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                                        map.addMarker(new MarkerOptions().position(buildings.get(building)).title(building).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
-                                        building2Marker.add(building);
-                                        buildingMarkerClick.add(0);
-                                    }
-                                }
-                            }
-                        });
+//                MainActivity.building2Marker.clear();
+
                 map.moveCamera(CameraUpdateFactory.zoomTo(STARTZOOM));
-                map.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+                map.moveCamera(CameraUpdateFactory.newLatLng(MainActivity.myLocation));
 
-
-
-
-
+                drawBuildingMarker();
                 map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         String markerId = marker.getId();
                         markerId = markerId.substring(1, 2);
                         marker.showInfoWindow();
-                        int markerClick=buildingMarkerClick.get(Integer.parseInt(markerId));
-                        buildingMarkerClick.set(Integer.parseInt(markerId),markerClick+1);
-                        if(buildingMarkerClick.get(Integer.parseInt(markerId))==2){
-                            for(int i=0; i<buildingMarkerClick.size(); i++){
-                                buildingMarkerClick.set(i,0);
+                        int markerClick=MainActivity.buildingMarkerClick.get(Integer.parseInt(markerId));
+                        MainActivity.buildingMarkerClick.set(Integer.parseInt(markerId),markerClick+1);
+                        if(MainActivity.buildingMarkerClick.get(Integer.parseInt(markerId))==2){
+                            for(int i=0; i<MainActivity.buildingMarkerClick.size(); i++){
+                                MainActivity.buildingMarkerClick.set(i,0);
                             }
                             Intent intent = new Intent(getActivity(), BuildingActivity.class);
-                            intent.putExtra("Location", building2Marker.get(Integer.parseInt(markerId)));
+                            intent.putExtra("Location", MainActivity.building2Marker.get(Integer.parseInt(markerId)));
                             intent.putExtra("Found", "False");
                             startActivity(intent);
                         }
@@ -184,24 +153,7 @@ public class mapFragment extends Fragment {
         });
 
 
-        locationManager=(LocationManager)mapFragment.this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        List<String> list=locationManager.getProviders(true);
-        if(list.contains(LocationManager.GPS_PROVIDER)){
-            provider=LocationManager.GPS_PROVIDER;
-        }
-        else if(list.contains(LocationManager.NETWORK_PROVIDER)){
-            provider=LocationManager.NETWORK_PROVIDER;
-        }
-        try {
-            Location location=locationManager.getLastKnownLocation(provider);
-            myLocation=new LatLng(location.getLatitude(),location.getLongitude());
-        }catch(SecurityException e){
-            Toast.makeText(getActivity(),"please allow the GPS permission",Toast.LENGTH_LONG).show();
-        }catch (NullPointerException e){
-            Toast.makeText(getActivity(),"please allow the GPS permission", Toast.LENGTH_LONG).show();
-        }catch (IllegalArgumentException e){
 
-        }
 
         // -------------- implementation of searching function
         goToSearch.setOnClickListener(new View.OnClickListener() {
@@ -209,7 +161,7 @@ public class mapFragment extends Fragment {
             public void onClick(View view) {
                 Log.d("search", "button click");
                 Intent intent = new Intent(mapFragment.this.getActivity(), SearchActivity.class);
-                intent.putExtra("building", building2Marker);
+                intent.putExtra("building", MainActivity.building2Marker);
                 startActivityForResult(intent,REQUEST_CODE);
             }
         });
@@ -226,13 +178,25 @@ public class mapFragment extends Fragment {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
             Log.d("query", data.getStringExtra("Query"));
             map.moveCamera(CameraUpdateFactory.zoomTo(SEARCHZOOM));
-            map.moveCamera(CameraUpdateFactory.newLatLng(buildings.get(data.getStringExtra("Query"))));
+            map.moveCamera(CameraUpdateFactory.newLatLng(MainActivity.buildings.get(data.getStringExtra("Query"))));
         }
     }
 
     public void mapInit(){
         if (!Places.isInitialized()) {
             Places.initialize(mapFragment.this.getActivity().getApplicationContext(), "AIzaSyBtbw67hiHLGAhYsXmuXZmcPtO4hc2ehdU");
+        }
+    }
+
+    public void drawBuildingMarker(){
+        System.out.println("start drawing");
+        for (String building : MainActivity.buildings.keySet()){
+            int height = 150;
+            int width = 150;
+            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.marker5);
+            Bitmap b = bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+            map.addMarker(new MarkerOptions().position(MainActivity.buildings.get(building)).title(building).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
         }
     }
 

@@ -69,7 +69,6 @@ public class listFragment extends Fragment {
     protected static ListView listView;
     protected static ListDemoAdapter mAdapter=null;
     private String provider;
-    private LatLng myLocation;
     private LocationManager locationManager;
 
 
@@ -79,7 +78,6 @@ public class listFragment extends Fragment {
     rearrange these buttons;
      */
 
-    private HashMap<String, LatLng> map;
     protected static String Found;
     protected static String currentLcation = MainActivity.targetBuilding;
 
@@ -87,13 +85,11 @@ public class listFragment extends Fragment {
     //    private Handler locationHandler = new Handler(){
 //        public void
 //    };
-    public listFragment(HashMap<String, LatLng> buildings, LatLng loc) {
+    public listFragment() {
         // Required empty public constructor
-        this.map = buildings;
-        this.myLocation = loc;
         float minDistance = 100000000;
-        for (String b: map.keySet()){
-            float dis = getDistance(myLocation, map.get(b));
+        for (String b: MainActivity.buildings.keySet()){
+            float dis = getDistance(MainActivity.myLocation, MainActivity.buildings.get(b));
             if (minDistance > dis){
                 minDistance = dis;
                 currentLcation = b;
@@ -142,8 +138,8 @@ public class listFragment extends Fragment {
             public void onLocationChanged(android.location.Location location) {
                 String curLocation = "";
                 float minDis = 10000000;
-                for (String b: map.keySet()){
-                    float dis = getDistance(location, map.get(b));
+                for (String b: MainActivity.buildings.keySet()){
+                    float dis = getDistance(location, MainActivity.buildings.get(b));
                     if (minDis > dis){
                         minDis = dis;
                         curLocation = b;

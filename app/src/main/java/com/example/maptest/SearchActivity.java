@@ -37,7 +37,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private SearchView searchView;
     private ListView searchListView;
-    public static ArrayList<String> building2Marker= new ArrayList<>();
 
 
     @Override
@@ -46,8 +45,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.search);
         Intent intent = getIntent();
         Log.d("search", "intent");
-        building2Marker = intent.getStringArrayListExtra("building");
-        if (building2Marker.isEmpty()){
+        if (MainActivity.building2Marker.isEmpty()){
             Log.d("search", "null");
             fetchData();
         }
@@ -62,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchView.setIconifiedByDefault(false);
         //setup adapter for listview
-        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, building2Marker);
+        ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.search_list, MainActivity.building2Marker);
         searchListView.setAdapter(adapter);
         searchListView.setTextFilterEnabled(false);
         Filter filter = adapter.getFilter();
@@ -136,7 +134,7 @@ public class SearchActivity extends AppCompatActivity {
                     public void onComplete(@Nonnull Task<QuerySnapshot> task){
                         if (task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
-                                building2Marker.add((String)document.get("Name"));
+                                MainActivity.building2Marker.add((String)document.get("Name"));
                             }
                         }
                     }
