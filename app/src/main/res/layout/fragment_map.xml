@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".mapFragment">
 
-
-    <TextView
-        android:id="@+id/searchTextView"
+    <!-- TODO: Update blank fragment layout -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="1dp"
-        android:layout_height="40dp"
-        android:text="Search here"
-        android:clickable="true"
-        android:textSize="20dp"
-        android:background="@drawable/border"
-        android:gravity="center" />
+        android:layout_height="match_parent">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/searchTextView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            app:icon="@drawable/ic_search_black_24dp"
+            app:iconTint="@android:color/darker_gray"
+            app:rippleColor="@color/colorWhite"
+            android:textColor="@android:color/darker_gray"
+            app:strokeColor="@android:color/darker_gray"
+            app:iconSize="24dp"
+            app:strokeWidth="0.5dp"
+            app:backgroundTint="@android:color/white"
+            android:text="Search here" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
 </LinearLayout>

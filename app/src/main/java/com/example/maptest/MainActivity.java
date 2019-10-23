@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(0);
                     return true;
                 }
-                case R.id.navigation_list:{
+                case R.id.navigation_nearby:{
                     viewPager.setCurrentItem(1);
                     return true;
                 }
