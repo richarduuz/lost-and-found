@@ -105,7 +105,7 @@ public class Register extends AppCompatActivity {
 
                             }
                             else{
-                                Toast.makeText(Register.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Register.this, "Register Failed. Please check your Internet", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

@@ -6,19 +6,49 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:isScrollContainer="true"
     tools:context=".GoToPublishItems">
 
 
+    <RelativeLayout
+        android:id="@+id/relative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/upload_imageview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/upload"
+            android:clickable="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="40dp"
+            android:text="Please upload your image here"
+            android:layout_toRightOf="@+id/upload_imageview"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/row"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/cardview_shadow_end_color"
+        android:orientation="horizontal"
+        android:layout_below="@+id/relative">
+    </LinearLayout>
+
     <EditText
+        android:layout_below="@+id/row"
         android:id="@+id/item_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
 
         android:hint="Item Name"
@@ -27,7 +57,8 @@
     <EditText
         android:id="@+id/item_contact"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
 
@@ -39,7 +70,8 @@
     <EditText
         android:id="@+id/item_phone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
 
@@ -51,65 +83,36 @@
     <EditText
         android:id="@+id/item_description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="5dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/border"
 
-        android:hint="Item Description"
+        android:hint="  Item Description"
         android:selectAllOnFocus="true"
         tools:layout_editor_absoluteY="137dp"
         android:layout_below="@+id/item_phone"/>
 
-    <RelativeLayout
-        android:id="@+id/relative"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/item_description">
-        <ImageView
-            android:id="@+id/upload_imageview"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/border" />
-
-        <Button
-            android:id="@+id/uploadimage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="16dp"
-            android:text="Upload from Gallery"
-            android:layout_toRightOf="@+id/upload_imageview"/>
-
-        <Button
-            android:id="@+id/camerabtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="16dp"
-            android:text="Take photo from Camera"
-            android:layout_toRightOf="@+id/upload_imageview"
-            android:layout_below="@+id/uploadimage"/>
-
-    </RelativeLayout>
     <LinearLayout
-        android:layout_below="@+id/relative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="20dp">
-        <Button
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/item_description"
+        android:gravity="center">
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/gotopublish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Publish!"
-            android:layout_below="@+id/upload_imageview"
-            android:layout_toRightOf="@+id/uploadimage"/>
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_margin="30dp"
+            app:rippleColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimaryDark"
+            app:strokeColor="@color/colorPrimaryDark"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/white"
+            android:text="Publish" />
     </LinearLayout>
-
-
 
 </RelativeLayout>

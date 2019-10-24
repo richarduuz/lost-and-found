@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -59,7 +60,7 @@ public class GoToPublishItems extends AppCompatActivity {
     private String image_string;
     private EditText Phone;
     private EditText ContactName;
-    private Button camerabtn;
+//    private Button camerabtn;
     public static final int CAMERA_REQUEST_CODE = 0;
     /*
     add end
@@ -68,7 +69,7 @@ public class GoToPublishItems extends AppCompatActivity {
     private EditText Description;
     private byte[] Image;
     private Button publish;
-    private Button selectIamge;
+//    private Button selectIamge;
     private ImageView upload_imageview;
     public static final int GALLERY_REQUEST_CODE = 1;
     public static final int GALLERY_PERMISSION_CODE = 1;
@@ -120,44 +121,53 @@ public class GoToPublishItems extends AppCompatActivity {
                 }
             }
         });
-        selectIamge=findViewById(R.id.uploadimage);
+//        selectIamge=findViewById(R.id.uploadimage);
         upload_imageview = findViewById(R.id.upload_imageview);
-        selectIamge.setOnClickListener(new View.OnClickListener() {
+        upload_imageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("ButtonClick", "button click");
-                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE,  Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            GALLERY_PERMISSION_CODE);
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GALLERY_REQUEST_CODE);
-            }
-        });
-        camerabtn = findViewById(R.id.camerabtn);
-        camerabtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.CAMERA},
-                            CAMERA_PERMISSION_CODE);
-                    return;
-                }
-                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
-                try {
-                    if (image.exists()) {
-                        image.delete();
-                        image.createNewFile();
+                AlertDialog.Builder builder = new AlertDialog.Builder(GoToPublishItems.this);
+                builder.setTitle("Please choose");
+                final String[] chioces = {"Take a photo from camera", "Upload a photo from Gallery"};
+                builder.setItems(chioces, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i){
+                            case 0:
+                                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.CAMERA},
+                                            CAMERA_PERMISSION_CODE);
+                                    return;
+                                }
+                                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
+                                try {
+                                    if (image.exists()) {
+                                        image.delete();
+                                        image.createNewFile();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
+                                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
+                                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
+                                break;
+                            case 1:
+                                if (ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                        && ContextCompat.checkSelfPermission(GoToPublishItems.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(GoToPublishItems.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE,  Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            GALLERY_PERMISSION_CODE);
+                                    return;
+                                }
+                                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+                                break;
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
-                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
-                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
