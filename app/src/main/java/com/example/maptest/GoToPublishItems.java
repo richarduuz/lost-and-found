@@ -232,10 +232,12 @@ public class GoToPublishItems extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
             int size = bitmap.getWidth() * bitmap.getHeight();
             int current_quality = 100;
-            if (size > 8000000){
-                current_quality = size/8000000 * 100;
+            if (size > 7000000){
+                double resize = 7000000.00/size * 100;
+                current_quality = (int)resize;
+                Log.d("Image", String.valueOf(resize));
             }
-            Log.d("Image", String.valueOf(size));
+            Log.d("Image", String.valueOf(current_quality));
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, current_quality, stream);
         } catch (Exception e) {
@@ -243,9 +245,7 @@ public class GoToPublishItems extends AppCompatActivity {
         }
 
         byte[] byteArray = stream.toByteArray();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            image_string = Base64.getEncoder().encodeToString(byteArray);
-        }
+        image_string = Base64.getEncoder().encodeToString(byteArray);
     }
 
     @Override

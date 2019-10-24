@@ -117,7 +117,7 @@ public class NearbyFound extends Fragment {
                 String itemdescription = item.getItemDiscription();
                 String Contact = item.getContact();
                 String Phone = item.getPhone();
-                String image = item.getItemImage();
+                String image = checkImageSize(item.getItemImage());
                 Intent intent=new Intent(NearbyFound.this.getActivity(), ItemDetail.class);
                 intent.putExtra("uid", userId);
                 intent.putExtra("image", image);
@@ -194,6 +194,33 @@ public class NearbyFound extends Fragment {
         float[] result = new float[1];
         Location.distanceBetween(user.latitude, user.longitude, buidling.latitude, buidling.longitude, result);
         return result[0];
+    }
+
+    public String checkImageSize(String image){
+        if(image == null){
+            return "null";
+        }
+        byte[] data = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            // Read BitMap by file path.
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            int size = bitmap.getWidth() * bitmap.getHeight();
+            int current_quality = 100;
+            if (size > 700000){
+                double resize = 700000.00/size * 100;
+                current_quality = (int)resize;
+                Log.d("Image", String.valueOf(resize));
+            }
+            Log.d("Image", String.valueOf(current_quality));
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, current_quality, stream);
+        } catch (Exception e) {
+            Log.d("Image", "Image path error");
+        }
+
+        byte[] byteArray = stream.toByteArray();
+        return java.util.Base64.getEncoder().encodeToString(byteArray);
     }
 
 }
