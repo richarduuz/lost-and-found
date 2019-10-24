@@ -169,7 +169,7 @@ public class BuildingActivity extends AppCompatActivity {
         try {
             // Read BitMap by file path.
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            int size = bitmap.getWidth() * bitmap.getHeight();
+            int size = bitmap.getAllocationByteCount();
             int current_quality = 100;
             if (size > 700000){
                 double resize = 700000.00/size * 100;

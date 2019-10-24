@@ -248,7 +248,8 @@ public class GoToPublishItems extends AppCompatActivity {
         try {
             // Read BitMap by file path.
             Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-            int size = bitmap.getWidth() * bitmap.getHeight();
+            int size = bitmap.getAllocationByteCount();
+            System.out.println("imageSize is:" + size);
             int current_quality = 100;
             if (size > 7000000){
                 double resize = 7000000.00/size * 100;
