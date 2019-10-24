@@ -197,7 +197,9 @@ public class mapFragment extends Fragment {
             BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.marker5);
             Bitmap b = bitmapdraw.getBitmap();
             Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-            map.addMarker(new MarkerOptions().position(MainActivity.buildings.get(building)).title(building).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+//            map.addMarker(new MarkerOptions().position(MainActivity.buildings.get(building)).title(building).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+            map.addMarker(new MarkerOptions().position(MainActivity.buildings.get(building)).title(building));
+
         }
     }
 
