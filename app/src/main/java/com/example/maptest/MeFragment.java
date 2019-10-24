@@ -123,6 +123,19 @@ public class MeFragment extends Fragment {
                                                 CAMERA_PERMISSION_CODE);
                                         return;
                                     }
+                                    File image = new File(getActivity().getExternalCacheDir(), "photo.jpg");
+                                    try {
+                                        if (image.exists()) {
+                                            image.delete();
+                                            image.createNewFile();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    photoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", image);
+                                    Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                                    startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
                                     break;
                                 case 1:
                                     if (checkSelfPermission(MeFragment.this.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
@@ -131,6 +144,8 @@ public class MeFragment extends Fragment {
                                                 GALLERY_PERMISSION_CODE);
                                         return;
                                     }
+                                    Intent gallery_intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    startActivityForResult(gallery_intent, GALLERY_REQUEST_CODE);
                                     break;
                             }
                         }

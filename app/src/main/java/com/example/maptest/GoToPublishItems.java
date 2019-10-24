@@ -132,6 +132,8 @@ public class GoToPublishItems extends AppCompatActivity {
                             GALLERY_PERMISSION_CODE);
                     return;
                 }
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
         camerabtn = findViewById(R.id.camerabtn);
@@ -143,6 +145,19 @@ public class GoToPublishItems extends AppCompatActivity {
                             CAMERA_PERMISSION_CODE);
                     return;
                 }
+                File image = new File(getExternalCacheDir(), "lostphoto.jpg");
+                try {
+                    if (image.exists()) {
+                        image.delete();
+                        image.createNewFile();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                uploadUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".fileprovider", image);
+                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, uploadUri);
+                startActivityForResult(camera_intent, CAMERA_REQUEST_CODE);
             }
         });
 
