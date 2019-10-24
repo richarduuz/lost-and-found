@@ -44,7 +44,7 @@ import javax.annotation.Nonnull;
 public class MainActivity extends AppCompatActivity {
 
     private mapFragment map_fragment;
-    private listFragment list_fragment;
+    private NearbyFragment nearby_fragment;
     private MeFragment meFragment;
     private chatListFragment chat_list_fragment;
     public static String targetBuilding = "Doug McDonell";
@@ -203,10 +203,10 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.mainViewPager);
         map_fragment = new mapFragment();
         meFragment = new MeFragment();
-        list_fragment = new listFragment();
+        nearby_fragment = new NearbyFragment();
         chat_list_fragment = new chatListFragment();
         fragmentList.add(map_fragment);
-        fragmentList.add(list_fragment);
+        fragmentList.add(nearby_fragment);
         fragmentList.add(chat_list_fragment);
         fragmentList.add(meFragment);
     }
