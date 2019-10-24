@@ -156,7 +156,7 @@ public class NearbyFound extends Fragment {
 
 
     public void fetchData(){
-        listFragment.items.clear();
+        NearbyFound.items.clear();
         FirebaseFirestore db=FirebaseFirestore.getInstance();
         db.collection(currentLcation)
                 .whereEqualTo("Found", Found)
