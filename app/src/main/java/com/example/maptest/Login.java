@@ -79,30 +79,32 @@ public class Login extends AppCompatActivity {
         else if (TextUtils.isEmpty(password)){
             Toast.makeText(Login.this, "Please enter valid password", Toast.LENGTH_SHORT).show();
         }
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            Log.d("forget", email + "+" + password);
-                            // Go to the home page in 3 seconds
-                            Timer timer = new Timer();
-                            TimerTask task1 = new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(Login.this, MainActivity.class);
-                                    startActivity(intent);
-                                    Login.this.finish();
-                                }
-                            };
-                            timer.schedule(task1, 3000);
+        else{
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                Log.d("forget", email + "+" + password);
+                                // Go to the home page in 3 seconds
+                                Timer timer = new Timer();
+                                TimerTask task1 = new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(Login.this, MainActivity.class);
+                                        startActivity(intent);
+                                        Login.this.finish();
+                                    }
+                                };
+                                timer.schedule(task1, 3000);
+                            }
+                            else{
+                                Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else{
-                            Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    });
+        }
 
     }
 }
