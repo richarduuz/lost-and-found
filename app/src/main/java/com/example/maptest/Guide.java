@@ -31,6 +31,11 @@ public class Guide extends AppCompatActivity {
     private ImageView[] imageViewArray;
     private guideFragment1 guide1;
     private guideFragment2 guide2;
+    private guideFragment3 guide3;
+    private guideFragment5 guide5;
+//    private guideFragment4 guide4;
+    private guideFragment6 guide6;
+    private guideFragment7 guide7;
 
 
 
@@ -61,7 +66,7 @@ public class Guide extends AppCompatActivity {
         fragmentAdpater = new FragmentAdapter(Guide.this.getSupportFragmentManager(), viewList);
         viewPagerGuide.setAdapter(fragmentAdpater);
 
-        viewPagerGuide.setOffscreenPageLimit(3);
+        viewPagerGuide.setOffscreenPageLimit(7);
         viewPagerGuide.setCurrentItem(0);
 
         viewPagerGuide.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -112,9 +117,20 @@ public class Guide extends AppCompatActivity {
         viewPagerGuide = findViewById(R.id.viewPagerGuide);
         guide1 = new guideFragment1();
         guide2 = new guideFragment2();
+        guide3 = new guideFragment3();
+//        guide4 = new guideFragment4();
+        guide5 = new guideFragment5();
+        guide6 = new guideFragment6();
+        guide7 = new guideFragment7();
+
         viewList = new ArrayList<>();
         viewList.add(guide1);
         viewList.add(guide2);
+        viewList.add(guide3);
+//        viewList.add(guide4);
+        viewList.add(guide5);
+        viewList.add(guide6);
+        viewList.add(guide7);
     }
 
     public void pointInit(){
