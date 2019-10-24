@@ -103,7 +103,7 @@ public class BuildingActivity extends AppCompatActivity {
                                     intent.putExtra("contactName", Contact);
                                     intent.putExtra("Phone", Phone);
                                     startActivity(intent);
-                                    BuildingActivity.this.finish();
+//                                    BuildingActivity.this.finish();
                                 }
                             });
                         }

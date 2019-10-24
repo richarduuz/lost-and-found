@@ -116,6 +116,14 @@ public class GoToPublishItems extends AppCompatActivity {
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(GoToPublishItems.this);
                     builder.setTitle("Please Login First!!!");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Intent login_intent = new Intent(GoToPublishItems.this, Login.class);
+                            startActivity(login_intent);
+                        }
+                    });
                     AlertDialog alert = builder.create();
                     alert.show();
                 }

@@ -37,7 +37,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-//        Intent input_intent = getIntent();
 
         firebaseAuth = FirebaseAuth.getInstance();
         email = findViewById(R.id.username);
@@ -70,6 +69,11 @@ public class Login extends AppCompatActivity {
                 userLogin(user_email, user_password);
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void userLogin(String email, String password){
@@ -106,5 +110,17 @@ public class Login extends AppCompatActivity {
                     });
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(Login.this, MainActivity.class);
+                startActivity(intent);
+                Login.this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
