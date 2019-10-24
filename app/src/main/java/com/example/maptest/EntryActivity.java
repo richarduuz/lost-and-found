@@ -30,6 +30,9 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entry);
         imageView = findViewById(R.id.entryImageView);
         imageView.setImageResource(R.drawable.entry);
+
+
+
         entryHandler.sendEmptyMessageAtTime(0,  SystemClock.uptimeMillis()+2000);
 
     }

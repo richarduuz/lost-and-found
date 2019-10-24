@@ -45,7 +45,7 @@ public class Register extends AppCompatActivity {
 
         email = findViewById(R.id.email_register);
         username = findViewById(R.id.username_register);
-        password = findViewById(R.id.email_register);
+        password = findViewById(R.id.password_register);
         register = findViewById(R.id.register);
         login =  findViewById(R.id.textView1);
 
