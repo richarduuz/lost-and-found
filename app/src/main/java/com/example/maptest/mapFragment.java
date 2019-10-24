@@ -130,7 +130,8 @@ public class mapFragment extends Fragment {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         String markerId = marker.getId();
-                        markerId = markerId.substring(1, 2);
+                        int lenMarkerId = markerId.length();
+                        markerId = markerId.substring(1, lenMarkerId);
                         marker.showInfoWindow();
                         int markerClick=MainActivity.buildingMarkerClick.get(Integer.parseInt(markerId));
                         MainActivity.buildingMarkerClick.set(Integer.parseInt(markerId),markerClick+1);
