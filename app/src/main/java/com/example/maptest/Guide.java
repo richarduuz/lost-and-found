@@ -36,6 +36,8 @@ public class Guide extends AppCompatActivity {
 //    private guideFragment4 guide4;
     private guideFragment6 guide6;
     private guideFragment7 guide7;
+    private guideFragment8 guide8;
+    private guideFragment9 guide9;
 
 
 
@@ -84,6 +86,11 @@ public class Guide extends AppCompatActivity {
                         imageViewArray[i].setBackgroundResource(R.drawable.dot_black);
                     }
                     if (index +1 == size){
+                        start.setText("START");
+                        start.setVisibility(View.VISIBLE);
+                    }
+                    else if (index == 0){
+                        start.setText("SKIP GUIDE");
                         start.setVisibility(View.VISIBLE);
                     }
                     else{
@@ -118,6 +125,8 @@ public class Guide extends AppCompatActivity {
         guide1 = new guideFragment1();
         guide2 = new guideFragment2();
         guide3 = new guideFragment3();
+        guide8 = new guideFragment8();
+        guide9 = new guideFragment9();
 //        guide4 = new guideFragment4();
         guide5 = new guideFragment5();
         guide6 = new guideFragment6();
@@ -127,7 +136,8 @@ public class Guide extends AppCompatActivity {
         viewList.add(guide1);
         viewList.add(guide2);
         viewList.add(guide3);
-//        viewList.add(guide4);
+        viewList.add(guide8);
+        viewList.add(guide9);
         viewList.add(guide5);
         viewList.add(guide6);
         viewList.add(guide7);

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="#b3f5ff"
+    android:background="#abebf5"
     tools:context=".Guide">
 
     <androidx.viewpager.widget.ViewPager
@@ -30,11 +30,11 @@
     </LinearLayout>
     <Button
         android:id="@+id/goToMain"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:text="Start"
+        android:text="SKIP GUIDE"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_above="@id/guideLayout"
         android:layout_gravity="center_horizontal"/>
 
